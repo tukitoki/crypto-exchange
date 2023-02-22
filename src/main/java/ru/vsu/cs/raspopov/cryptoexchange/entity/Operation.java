@@ -16,9 +16,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "operation")
 public class Operation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "operation_id")
     private int id;
     private Timestamp date;
 }

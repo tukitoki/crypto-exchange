@@ -16,7 +16,7 @@ import lombok.Setter;
 public class UserCurrencyAmount {
 
     @Id
-    @JoinColumn(name = "user_secret_key")
+    @JoinColumn(name = "user_id")
     @ManyToOne
     private User user;
 

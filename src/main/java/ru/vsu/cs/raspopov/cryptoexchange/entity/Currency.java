@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,7 +18,10 @@ public class Currency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "currency_id")
     private int id;
     private String name;
     private double exchangeRateToTheRuble;
+    @OneToMany
+    private List<UserCurrencyAmount> userCurrencyAmount;
 }
