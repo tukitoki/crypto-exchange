@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(UserCurrencyAmountId.class)
+@IdClass(AmountOfUserCurrencyId.class)
 @Entity
 @Table(name = "user_currency_amount")
-public class UserCurrencyAmount {
+public class AmountOfUserCurrency {
 
     @Id
     @JoinColumn(name = "user_id")

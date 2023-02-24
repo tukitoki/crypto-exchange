@@ -25,7 +25,7 @@ public class User {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "user_id", columnDefinition = "VARCHAR(40)",
             insertable = false, updatable = false, nullable = false)
-    private String secret_key;
+    private String secretKey;
 
     @NotBlank(message = "Enter your username")
     @Size(max = 50, message = "username length must be <= 50 characters")
@@ -42,5 +42,5 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserCurrencyAmount> userCurrencies;
+    private List<AmountOfUserCurrency> wallet;
 }

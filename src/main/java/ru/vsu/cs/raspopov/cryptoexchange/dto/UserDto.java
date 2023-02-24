@@ -1,17 +1,16 @@
 package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.UserCurrencyAmount;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
 
-    private String secret_key;
+    @JsonProperty("secret_key")
+    private String secretKey;
 
 }
