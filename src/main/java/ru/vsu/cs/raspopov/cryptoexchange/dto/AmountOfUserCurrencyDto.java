@@ -1,22 +1,41 @@
 package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.AmountOfUserCurrencyId;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Value;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class AmountOfUserCurrencyDto {
 
-    private String currency;
+    private interface Currency {
+        @NotBlank
+        String getCurrency();
+    }
 
-    @JsonIgnore
-    private AmountOfUserCurrencyId amountOfUserCurrencyId;
+    private interface AmountOfUserCurrencyId {
+        AmountOfUserCurrencyId getAmountOfUserCurrencyId();
+    }
 
-    @JsonProperty("count")
-    private double amount;
+    private interface Amount {
+        @JsonProperty("count")
+        double getAmount();
+    }
+
+    public static class Request {
+
+        @Value
+        public static class CurrencyAmount implements Currency, Amount {
+            String currency;
+            double amount;
+        }
+    }
+
+    public static class Response {
+
+        @Value
+        public static class CurrencyAmount implements Currency, Amount {
+            String currency;
+            double amount;
+
+        }
+    }
 }

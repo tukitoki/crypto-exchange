@@ -21,7 +21,10 @@ public class Currency {
     @Column(name = "currency_id")
     private int id;
     private String name;
-    private double exchangeRateToTheRuble;
     @OneToMany(mappedBy = "currency")
     private List<AmountOfUserCurrency> userCurrencyAmount;
+
+    @OneToMany(mappedBy = "baseCurrency")
+    private List<ExchangeRate> baseExchangeRates;
+
 }
