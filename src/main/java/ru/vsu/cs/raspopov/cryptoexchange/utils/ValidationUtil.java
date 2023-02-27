@@ -1,11 +1,8 @@
 package ru.vsu.cs.raspopov.cryptoexchange.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Currency;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 
 import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;

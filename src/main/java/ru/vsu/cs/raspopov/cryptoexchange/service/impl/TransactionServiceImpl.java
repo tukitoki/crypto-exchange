@@ -1,6 +1,7 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.TransactionDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Role;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -28,6 +30,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         int count = transactionRepository.getCountTransactionInTime(transactionDto.getDateFrom(),
                 transactionDto.getDateTo());
+
+        log.info("ADMIN successfully get transaction count");
 
         return new TransactionDto.Response.TransactionCounter(count);
     }

@@ -1,6 +1,7 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
@@ -18,6 +19,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CurrencyServiceImpl implements CurrencyService {
 
     private final CurrencyRepository currencyRepository;
@@ -41,6 +43,8 @@ public class CurrencyServiceImpl implements CurrencyService {
                     exchangeRate.getAnotherCurrency().getName(),
                     exchangeRate.getExchangeRate()));
         });
+
+        log.info("User/Admin successfully get exchange rates");
 
         return exchangeRates;
     }
@@ -82,6 +86,9 @@ public class CurrencyServiceImpl implements CurrencyService {
             exchangeRate.setExchangeRate(1 / currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
         });
+
+        log.info("ADMIN successfully update exchange rates");
+
         return baseCurrencyExchangeRates;
     }
 
@@ -96,9 +103,12 @@ public class CurrencyServiceImpl implements CurrencyService {
         Currency baseCurrency = currencyRepository.findByName(currencyDto.getCurrency()).get();
 
         double totalCurrencyAmount = 0;
-        for (AmountOfUserCurrency amountOfUserCurrency : amountOfUserCurrencyRepository.findAll()) {
+        for (AmountOfUserCurrency amountOfUserCurrency : amountOfUserCurrencyRepository
+                .findAllByCurrency(baseCurrency)) {
             totalCurrencyAmount += amountOfUserCurrency.getAmount();
         }
+
+        log.info("ADMIN successfully get total amount of currency");
 
         return new AmountOfUserCurrencyDto.Response.CurrencyAmount(currencyDto.getCurrency(), totalCurrencyAmount);
     }

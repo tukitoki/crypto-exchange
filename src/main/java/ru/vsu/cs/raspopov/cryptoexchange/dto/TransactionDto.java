@@ -1,14 +1,13 @@
 package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.Transaction;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.TransactionType;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TransactionDto {
 
@@ -21,32 +20,34 @@ public class TransactionDto {
     }
     private interface Date {
         @NotBlank
-        Timestamp getDate();
+        LocalDateTime getDate();
     }
     private interface DateFrom {
 
         @JsonProperty("date_from")
-        Timestamp getDateFrom();
+        @JsonFormat(pattern="dd.MM.yyyy")
+        LocalDate getDateFrom();
     }
     private interface DateTo {
         @JsonProperty("date_to")
-        Timestamp getDateTo();
+        @JsonFormat(pattern="dd.MM.yyyy")
+        LocalDate getDateTo();
     }
     private interface TransactionCount {
         @JsonProperty("transaction_count")
         Integer getCount();
     }
 
-    public static class Request {
+    public enum Request {;
         @Value
         public static class TransactionFromTo implements Fields.SecretKey, DateFrom, DateTo {
             String secretKey;
-            Timestamp dateFrom;
-            Timestamp dateTo;
+            LocalDate dateFrom;
+            LocalDate dateTo;
         }
     }
 
-    public static class Response {
+    public enum Response {;
         @Value
         public static class TransactionCounter implements TransactionCount {
             Integer count;

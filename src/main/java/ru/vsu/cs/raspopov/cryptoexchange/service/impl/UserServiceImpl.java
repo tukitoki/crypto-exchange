@@ -1,6 +1,7 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
@@ -12,6 +13,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.UserService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -28,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toEntity(userRegistrationDto);
         userRepository.save(user);
+
+        log.info("USER successfully registered");
+
         return modelMapper.map(user, UserDto.class);
     }
 }

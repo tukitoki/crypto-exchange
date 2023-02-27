@@ -1,7 +1,5 @@
 package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Positive;
 import lombok.Value;
 
 public class AmountOfUserCurrencyDto {
@@ -10,7 +8,7 @@ public class AmountOfUserCurrencyDto {
         AmountOfUserCurrencyId getAmountOfUserCurrencyId();
     }
 
-    public static class Request {
+    public enum Request {;
 
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {
@@ -19,7 +17,7 @@ public class AmountOfUserCurrencyDto {
         }
     }
 
-    public static class Response {
+    public enum Response {;
 
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {

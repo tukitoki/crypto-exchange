@@ -1,6 +1,7 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
@@ -10,13 +11,15 @@ import ru.vsu.cs.raspopov.cryptoexchange.repository.*;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class BalanceServiceImpl implements BalanceService {
 
     private final UserRepository userRepository;
@@ -38,6 +41,8 @@ public class BalanceServiceImpl implements BalanceService {
                     userCurrencyAmount.getAmount()));
         });
 
+        log.info("User with secret_key: " + userDto.getSecretKey() +" successfully get balance");
+
         return userWallet;
     }
 
@@ -58,6 +63,11 @@ public class BalanceServiceImpl implements BalanceService {
         amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() + balanceDto.getAmount());
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
 
+        log.info("User with secret_key: " + balanceDto.getSecretKey() + "successfully replenishment "
+                + balanceDto.getAmount() + balanceDto.getCurrency());
+
+        saveTransaction(TransactionType.REPLENISHMENT, balanceDto.getSecretKey());
+
         return new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 amountOfUserCurrency.getCurrency().getName(),
                 amountOfUserCurrency.getAmount());
@@ -77,12 +87,15 @@ public class BalanceServiceImpl implements BalanceService {
                 .findById(new AmountOfUserCurrencyId(balanceDto.getSecretKey(), currency.getId()))
                 .get();
 
-        if (amountOfUserCurrency.getAmount() < balanceDto.getAmount()) {
-            throw new IllegalArgumentException("Not enough balance on wallet");
-        }
+        validWalletBalance(amountOfUserCurrency.getAmount(), balanceDto.getAmount());
 
         amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() - balanceDto.getAmount());
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
+
+        saveTransaction(TransactionType.WITHDRAWAL, balanceDto.getSecretKey());
+
+        log.info("User with secret_key: " + balanceDto.getSecretKey() + "successfully withdrawal "
+                + balanceDto.getAmount() + balanceDto.getCurrency());
 
         return new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 amountOfUserCurrency.getCurrency().getName(),
@@ -98,37 +111,36 @@ public class BalanceServiceImpl implements BalanceService {
         ValidationUtil.validCurrency(currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()));
         ValidationUtil.validCurrency(currencyRepository.findByName(exchangeCurrency.getCurrencyTo()));
 
-
         Currency baseCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()).get();
-
         AmountOfUserCurrency fromExchangeCurrency = amountOfUserCurrencyRepository
                 .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
                         baseCurrency.getId()))
                 .get();
-        if (fromExchangeCurrency.getAmount() < exchangeCurrency.getAmount()) {
-            throw new RuntimeException("Not enough balance on wallet");
-        }
+
+        validWalletBalance(fromExchangeCurrency.getAmount(), exchangeCurrency.getAmount());
 
         Currency exchangeToCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyTo()).get();
-
         AmountOfUserCurrency toExchangeCurrency = amountOfUserCurrencyRepository
                 .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
                         exchangeToCurrency.getId()))
                 .get();
 
-        AmountOfUserCurrency updatedToExchangeCurrency = exchangeCurrency(fromExchangeCurrency,
+        double exchangeAmount = exchangeCurrency(fromExchangeCurrency,
                 toExchangeCurrency,
                 exchangeCurrency.getAmount());
+
+        log.info("User with secret_key: " + exchangeCurrency.getSecretKey() + "successfully exchange from "
+                + exchangeCurrency.getCurrencyFrom() + "to" + exchangeCurrency.getAmount());
 
         saveTransaction(TransactionType.EXCHANGE, exchangeCurrency.getSecretKey());
 
         return new BalanceOperationDto.Response.ExchangeCurrency(exchangeCurrency.getCurrencyFrom(),
                 exchangeCurrency.getCurrencyTo(),
                 exchangeCurrency.getAmount(),
-                updatedToExchangeCurrency.getAmount());
+                exchangeAmount);
     }
 
-    private AmountOfUserCurrency exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
+    private Double exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
                                                   AmountOfUserCurrency toExchangeCurrency,
                                                   Double amountOfExchange) {
         ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(
@@ -141,10 +153,17 @@ public class BalanceServiceImpl implements BalanceService {
                 + toExchangeCurrency.getAmount());
 
         amountOfUserCurrencyRepository.save(fromExchangeCurrency);
-        return amountOfUserCurrencyRepository.save(toExchangeCurrency);
+        toExchangeCurrency = amountOfUserCurrencyRepository.save(toExchangeCurrency);
+        return toExchangeCurrency.getAmount();
     }
 
     private void saveTransaction(TransactionType type, String secretKey) {
-        transactionRepository.save(new Transaction(secretKey, type, new Timestamp(System.currentTimeMillis())));
+        transactionRepository.save(new Transaction(secretKey, type, LocalDate.now()));
+    }
+
+    public void validWalletBalance(Double balance, Double amount) {
+        if (balance < amount) {
+            throw new IllegalArgumentException("Not enough balance on wallet");
+        }
     }
 }

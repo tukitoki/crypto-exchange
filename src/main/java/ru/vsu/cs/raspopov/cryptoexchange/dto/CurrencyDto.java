@@ -20,7 +20,7 @@ public class CurrencyDto {
         List<Response.CurrencyExchange> getCurrencies();
     }
 
-    public static class Request {
+    public enum Request {;
         @Value
         public static class SecretKeyCurrency implements Fields.SecretKey, Fields.Currency {
             String secretKey;
@@ -35,7 +35,7 @@ public class CurrencyDto {
         }
     }
 
-    public static class Response {
+    public enum Response {;
         @Value
         public static class CurrencyExchange implements ExchangeRate, Fields.Currency {
             String currency;

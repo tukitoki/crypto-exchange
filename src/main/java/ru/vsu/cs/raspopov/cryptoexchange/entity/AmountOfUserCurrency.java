@@ -1,6 +1,8 @@
 package ru.vsu.cs.raspopov.cryptoexchange.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class AmountOfUserCurrency {
     @ManyToOne
     private Currency currency;
 
+    @Min(value = 0, message = "amount should be >=0")
     private Double amount;
 
 }

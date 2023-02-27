@@ -33,7 +33,7 @@ public class BalanceOperationDto {
         Double getAmountFrom();
     }
 
-    public static class Request {
+    public enum Request {;
         @Value
         public static class ReplenishmentBalance implements Fields.SecretKey, Fields.Currency, Fields.Amount {
             String secretKey;
@@ -57,7 +57,7 @@ public class BalanceOperationDto {
         }
     }
 
-    public static class Response{
+    public enum Response {;
 
         @Value
         public static class ExchangeCurrency implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
