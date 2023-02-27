@@ -16,6 +16,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public List<CurrencyDto.Response.CurrencyExchange> getExchangeRate(
             CurrencyDto.Request.SecretKeyCurrency currencyDto) {
-        User user = userRepository.findById(currencyDto.getSecretKey())
+        userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));
 
@@ -52,7 +53,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
             CurrencyDto.Request.ChangeExchangeRate currencyDto) {
-        User user = userRepository.findById(currencyDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.ADMIN);
         ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));
@@ -95,7 +96,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount getTotalAmountOfCurrency(
             CurrencyDto.Request.SecretKeyCurrency currencyDto) {
-        User user = userRepository.findById(currencyDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.ADMIN);
         ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));

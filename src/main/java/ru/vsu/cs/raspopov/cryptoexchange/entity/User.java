@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,9 +24,9 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "user_id", columnDefinition = "VARCHAR(40)",
+    @Column(name = "user_id", columnDefinition = "uuid",
             insertable = false, updatable = false, nullable = false)
-    private String secretKey;
+    private UUID secretKey;
 
     @NotBlank(message = "Enter your username")
     @Size(max = 50, message = "username length must be <= 50 characters")

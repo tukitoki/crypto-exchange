@@ -12,10 +12,10 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +30,7 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto) {
-        User user = userRepository.findById(userDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(userDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.USER);
 
@@ -49,7 +49,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount replenishmentBalance(
             BalanceOperationDto.Request.ReplenishmentBalance balanceDto) {
-        User user = userRepository.findById(balanceDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(balanceDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.USER);
         ValidationUtil.validCurrency(currencyRepository.findByName(balanceDto.getCurrency()));
@@ -57,7 +57,7 @@ public class BalanceServiceImpl implements BalanceService {
         Currency currency = currencyRepository.findByName(balanceDto.getCurrency()).get();
 
         AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository
-                .findById(new AmountOfUserCurrencyId(balanceDto.getSecretKey(),
+                .findById(new AmountOfUserCurrencyId(UUID.fromString(balanceDto.getSecretKey()),
                         currency.getId()))
                 .get();
         amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() + balanceDto.getAmount());
@@ -76,7 +76,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount withdrawalMoney(
             BalanceOperationDto.Request.WithdrawalBalance balanceDto) {
-        User user = userRepository.findById(balanceDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(balanceDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.USER);
         ValidationUtil.validCurrency(currencyRepository.findByName(balanceDto.getCurrency()));
@@ -84,7 +84,7 @@ public class BalanceServiceImpl implements BalanceService {
         Currency currency = currencyRepository.findByName(balanceDto.getCurrency()).get();
 
         AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository
-                .findById(new AmountOfUserCurrencyId(balanceDto.getSecretKey(), currency.getId()))
+                .findById(new AmountOfUserCurrencyId(UUID.fromString(balanceDto.getSecretKey()), currency.getId()))
                 .get();
 
         validWalletBalance(amountOfUserCurrency.getAmount(), balanceDto.getAmount());
@@ -105,7 +105,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public BalanceOperationDto.Response.ExchangeCurrency exchangeCurrency(
             BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
-        User user = userRepository.findById(exchangeCurrency.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(exchangeCurrency.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.USER);
         ValidationUtil.validCurrency(currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()));
@@ -113,7 +113,7 @@ public class BalanceServiceImpl implements BalanceService {
 
         Currency baseCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()).get();
         AmountOfUserCurrency fromExchangeCurrency = amountOfUserCurrencyRepository
-                .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
+                .findById(new AmountOfUserCurrencyId(UUID.fromString(exchangeCurrency.getSecretKey()),
                         baseCurrency.getId()))
                 .get();
 
@@ -121,7 +121,7 @@ public class BalanceServiceImpl implements BalanceService {
 
         Currency exchangeToCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyTo()).get();
         AmountOfUserCurrency toExchangeCurrency = amountOfUserCurrencyRepository
-                .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
+                .findById(new AmountOfUserCurrencyId(UUID.fromString(exchangeCurrency.getSecretKey()),
                         exchangeToCurrency.getId()))
                 .get();
 
@@ -130,7 +130,7 @@ public class BalanceServiceImpl implements BalanceService {
                 exchangeCurrency.getAmount());
 
         log.info("User with secret_key: " + exchangeCurrency.getSecretKey() + "successfully exchange from "
-                + exchangeCurrency.getCurrencyFrom() + "to" + exchangeCurrency.getAmount());
+                + exchangeCurrency.getCurrencyFrom() + " to " + exchangeCurrency.getCurrencyTo());
 
         saveTransaction(TransactionType.EXCHANGE, exchangeCurrency.getSecretKey());
 

@@ -12,6 +12,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionDto.Response.TransactionCounter getTransactionCount(
             TransactionDto.Request.TransactionFromTo transactionDto) {
-        User user = userRepository.findById(transactionDto.getSecretKey())
+        User user = userRepository.findById(UUID.fromString(transactionDto.getSecretKey()))
                 .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
         ValidationUtil.validUserRole(user, Role.ADMIN);
 
