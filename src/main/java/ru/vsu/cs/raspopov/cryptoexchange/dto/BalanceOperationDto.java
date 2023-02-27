@@ -8,74 +8,52 @@ import lombok.Value;
 
 public class BalanceOperationDto {
 
-    private interface SecretKey {
-        @NotBlank
-        @JsonProperty("secret_key")
-        String getSecretKey();
-    }
-
-    private interface Currency {
-        @NotBlank
-        String getCurrency();
-    }
-
-    private interface Count {
-        @Positive
-        double getCount();
-    }
-
     private interface MoneyWithdrawalPlatform {
-        @NotBlank
+        @NotBlank(message = "Type credit_card or wallet platform")
         @JsonProperty("credit_card")
         @JsonAlias("wallet")
         String getMoneyWithdrawalPlatform();
     }
-
     private interface CurrencyFrom {
-
-        @NotBlank
+        @NotBlank(message = "Type currency_from")
         @JsonProperty("currency_from")
         String getCurrencyFrom();
     }
-
     private interface CurrencyTo {
-
-        @NotBlank
+        @NotBlank(message = "Type currency_to")
         @JsonProperty("currency_to")
         String getCurrencyTo();
     }
-
     private interface AmountTo {
-        double getAmountTo();
+        @Positive(message = "Amount_to should be >0")
+        Double getAmountTo();
     }
-
     private interface AmountFrom {
-        double getAmountFrom();
+        @Positive(message = "Amount_from should be >0")
+        Double getAmountFrom();
     }
 
     public static class Request {
         @Value
-        public static class ReplenishmentBalance implements SecretKey, Currency, Count {
+        public static class ReplenishmentBalance implements Fields.SecretKey, Fields.Currency, Fields.Amount {
             String secretKey;
             String currency;
-            double count;
+            Double amount;
         }
-
         @Value
-        public static class WithdrawalBalance implements SecretKey, Currency, Count, MoneyWithdrawalPlatform {
+        public static class WithdrawalBalance implements Fields.SecretKey, Fields.Currency, Fields.Amount,
+                MoneyWithdrawalPlatform {
             String secretKey;
             String currency;
-            double count;
+            Double amount;
             String moneyWithdrawalPlatform;
         }
-
         @Value
-        public static class ExchangeCurrency implements SecretKey, CurrencyFrom, CurrencyTo, Count {
+        public static class ExchangeCurrency implements Fields.SecretKey, CurrencyFrom, CurrencyTo, Fields.Amount {
             String secretKey;
             String currencyFrom;
             String currencyTo;
-            @JsonProperty("amount")
-            double count;
+            Double amount;
         }
     }
 
@@ -85,8 +63,8 @@ public class BalanceOperationDto {
         public static class ExchangeCurrency implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
             String currencyFrom;
             String currencyTo;
-            double amountFrom;
-            double amountTo;
+            Double amountFrom;
+            Double amountTo;
         }
 
     }

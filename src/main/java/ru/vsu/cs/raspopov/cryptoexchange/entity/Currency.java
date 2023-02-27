@@ -19,7 +19,7 @@ public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "currency_id")
-    private int id;
+    private Integer id;
     private String name;
     @OneToMany(mappedBy = "currency")
     private List<AmountOfUserCurrency> userCurrencyAmount;

@@ -25,6 +25,6 @@ public class AmountOfUserCurrency {
     @ManyToOne
     private Currency currency;
 
-    private double amount;
+    private Double amount;
 
 }

@@ -1,33 +1,20 @@
 package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.List;
 
 public class CurrencyDto {
 
-    private interface SecretKey {
-        @JsonProperty("secret_key")
-        String getSecretKey();
-    }
-
     private interface Id {
-        int getId();
+        Integer getId();
     }
-
-    private interface Name {
-        @JsonProperty("currency")
-        String getName();
-    }
-
     private interface ExchangeRate {
         @JsonProperty("exchange_rate")
-        double getExchangeRate();
-    }
-    private interface CurrencyAmount {
-        @JsonProperty("amount")
-        double getAmount();
+        @Positive(message = "Exchange_rate should be >0")
+        Double getExchangeRate();
     }
     private interface Currencies {
         List<Response.CurrencyExchange> getCurrencies();
@@ -35,29 +22,29 @@ public class CurrencyDto {
 
     public static class Request {
         @Value
-        public static class SecretKeyCurrency implements SecretKey, Name {
+        public static class SecretKeyCurrency implements Fields.SecretKey, Fields.Currency {
             String secretKey;
-            String name;
+            String currency;
         }
         @Value
-        public static class ChangeExchangeRate implements SecretKey, Name, Currencies {
+        public static class ChangeExchangeRate implements Fields.SecretKey, Fields.Currency, Currencies {
             String secretKey;
             @JsonProperty("base_currency")
-            String name;
+            String currency;
             List<Response.CurrencyExchange> currencies;
         }
     }
 
     public static class Response {
         @Value
-        public static class CurrencyExchange implements ExchangeRate, Name {
-            String name;
-            double exchangeRate;
+        public static class CurrencyExchange implements ExchangeRate, Fields.Currency {
+            String currency;
+            Double exchangeRate;
         }
         @Value
-        public static class TotalCurrencyAmount implements Name, CurrencyAmount {
-            String name;
-            double amount;
+        public static class TotalCurrencyAmount implements Fields.Currency, Fields.Amount {
+            String currency;
+            Double amount;
         }
     }
 

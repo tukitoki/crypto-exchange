@@ -21,9 +21,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserRegistrationDto userRegistrationDto) {
         if (userRepository.findByEmail(userRegistrationDto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("email already present");
+            throw new IllegalArgumentException("Email already present");
         } else if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("username already present");
+            throw new IllegalArgumentException("Username already present");
         }
 
         User user = userMapper.toEntity(userRegistrationDto);

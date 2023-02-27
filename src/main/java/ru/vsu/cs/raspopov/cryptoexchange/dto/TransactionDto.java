@@ -15,31 +15,20 @@ public class TransactionDto {
     private interface Id {
         Integer getId();
     }
-
-    private interface SecretKey {
-        @NotBlank
-        @JsonProperty("secret_key")
-        String getSecretKey();
-    }
-
     private interface Type {
         @NotBlank
         TransactionType getType();
     }
-
     private interface Date {
         @NotBlank
         Timestamp getDate();
     }
-
     private interface DateFrom {
 
         @JsonProperty("date_from")
         Timestamp getDateFrom();
     }
-
     private interface DateTo {
-
         @JsonProperty("date_to")
         Timestamp getDateTo();
     }
@@ -50,7 +39,7 @@ public class TransactionDto {
 
     public static class Request {
         @Value
-        public static class TransactionFromTo implements SecretKey, DateFrom, DateTo {
+        public static class TransactionFromTo implements Fields.SecretKey, DateFrom, DateTo {
             String secretKey;
             Timestamp dateFrom;
             Timestamp dateTo;

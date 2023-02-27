@@ -28,5 +28,5 @@ public class ExchangeRate {
     private Currency anotherCurrency;
 
     @Column(name = "exchange_rate")
-    private double exchangeRate;
+    private Double exchangeRate;
 }

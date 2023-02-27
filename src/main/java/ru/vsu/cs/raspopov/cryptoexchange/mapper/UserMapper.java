@@ -24,7 +24,7 @@ public class UserMapper {
         user.setRole(Role.USER);
         List<AmountOfUserCurrency> userCurrencyAmounts = new ArrayList<>();
         for (Currency currency : currencyRepository.findAll()) {
-            userCurrencyAmounts.add(new AmountOfUserCurrency(user, currency, 0));
+            userCurrencyAmounts.add(new AmountOfUserCurrency(user, currency, 0.0));
         }
         user.setWallet(userCurrencyAmounts);
         return user;

@@ -11,5 +11,5 @@ public class AmountOfUserCurrencyId implements Serializable {
 
     private String user;
 
-    private int currency;
+    private Integer currency;
 }
