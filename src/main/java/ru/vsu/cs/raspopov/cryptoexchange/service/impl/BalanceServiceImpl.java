@@ -1,18 +1,15 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.*;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
+import ru.vsu.cs.raspopov.cryptoexchange.repository.*;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,38 +22,48 @@ public class BalanceServiceImpl implements BalanceService {
     private final CurrencyRepository currencyRepository;
     private final AmountOfUserCurrencyRepository amountOfUserCurrencyRepository;
     private final ExchangeRateRepository exchangeRateRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final TransactionRepository transactionRepository;
 
     @Override
     public List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto) {
-        if (userRepository.findById(userDto.getSecretKey()).isEmpty()) {
-            throw new IllegalArgumentException("wrong user secret_key");
+        User user = userRepository.findById(userDto.getSecretKey())
+                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        if (user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access only for USER");
         }
-        User user = userRepository.findById(userDto.getSecretKey()).get();
+
         List<AmountOfUserCurrencyDto.Response.CurrencyAmount> userWallet = new ArrayList<>();
         user.getWallet().forEach(userCurrencyAmount -> {
             userWallet.add(new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                     userCurrencyAmount.getCurrency().getName(),
                     userCurrencyAmount.getAmount()));
         });
+
         return userWallet;
     }
 
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount replenishmentBalance(
-            BalanceOperationDto.Request.ReplenishmentBalanceDto balanceDto) {
-        if (userRepository.findById(balanceDto.getSecretKey()).isEmpty()) {
-            throw new IllegalArgumentException("wrong user secret_key");
+            BalanceOperationDto.Request.ReplenishmentBalance balanceDto) {
+        User user = userRepository.findById(balanceDto.getSecretKey())
+                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        if (user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access only for USER");
         }
+
         if (currencyRepository.findByName(balanceDto.getCurrency()).isEmpty()) {
-            throw new IllegalArgumentException("wrong currency value");
+            throw new IllegalArgumentException("Wrong currency value");
         }
+
         Currency currency = currencyRepository.findByName(balanceDto.getCurrency()).get();
-        AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository.findById(
-                new AmountOfUserCurrencyId(balanceDto.getSecretKey(),
-                        currency.getId())).get();
+
+        AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository
+                .findById(new AmountOfUserCurrencyId(balanceDto.getSecretKey(),
+                        currency.getId()))
+                .get();
         amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() + balanceDto.getCount());
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
+
         return new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 amountOfUserCurrency.getCurrency().getName(),
                 amountOfUserCurrency.getAmount());
@@ -64,62 +71,97 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount withdrawalMoney(
-            BalanceOperationDto.Request.WithdrawalBalanceDto balanceDto) {
-        if (userRepository.findById(balanceDto.getSecretKey()).isEmpty()) {
-            throw new IllegalArgumentException("wrong user secret_key");
+            BalanceOperationDto.Request.WithdrawalBalance balanceDto) {
+        User user = userRepository.findById(balanceDto.getSecretKey())
+                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        if (user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access only for USER");
         }
+
         if (currencyRepository.findByName(balanceDto.getCurrency()).isEmpty()) {
-            throw new IllegalArgumentException("wrong currency value");
+            throw new IllegalArgumentException("Wrong currency value");
         }
+
         Currency currency = currencyRepository.findByName(balanceDto.getCurrency()).get();
-        AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository.findById(
-                new AmountOfUserCurrencyId(balanceDto.getSecretKey(),
-                        currency.getId())).get();
+
+        AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository
+                .findById(new AmountOfUserCurrencyId(balanceDto.getSecretKey(), currency.getId()))
+                .get();
+
         if (amountOfUserCurrency.getAmount() < balanceDto.getCount()) {
-            throw new RuntimeException("not enough balance on wallet");
+            throw new RuntimeException("Not enough balance on wallet");
         }
+
         amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() - balanceDto.getCount());
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
-        //        amountOfUserCurrencyDto.setCurrency(balanceDto.getCurrency());
+
         return new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 amountOfUserCurrency.getCurrency().getName(),
                 amountOfUserCurrency.getAmount());
     }
 
     @Override
-    public BalanceOperationDto.Response.ExchangeCurrencyDto exchangeCurrency(
-            BalanceOperationDto.Request.ExchangeCurrencyDto exchangeCurrencyDto) {
-        if (userRepository.findById(exchangeCurrencyDto.getSecretKey()).isEmpty()) {
-            throw new NoSuchElementException("invalid secret_key");
+    public BalanceOperationDto.Response.ExchangeCurrency exchangeCurrency(
+            BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
+        User user = userRepository.findById(exchangeCurrency.getSecretKey())
+                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        if (user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access only for USER");
         }
-        if (currencyRepository.findByName(exchangeCurrencyDto.getCurrencyTo()).isEmpty()) {
-            throw new NoSuchElementException("invalid currency_to");
+
+        if (currencyRepository.findByName(exchangeCurrency.getCurrencyTo()).isEmpty()) {
+            throw new NoSuchElementException("Invalid currency_to");
         }
-        if (currencyRepository.findByName(exchangeCurrencyDto.getCurrencyFrom()).isEmpty()) {
-            throw new NoSuchElementException("invalid currency_from");
+        if (currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()).isEmpty()) {
+            throw new NoSuchElementException("Invalid currency_from");
         }
-        Currency baseCurrency = currencyRepository.findByName(exchangeCurrencyDto.getCurrencyFrom()).get();
-        AmountOfUserCurrency amountOfUserCurrency = amountOfUserCurrencyRepository
-                .findById(new AmountOfUserCurrencyId(exchangeCurrencyDto.getSecretKey(),
-                        baseCurrency.getId())).get();
-        if (amountOfUserCurrency.getAmount() < exchangeCurrencyDto.getCount()) {
-            throw new RuntimeException("not enough balance on wallet");
+
+        Currency baseCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyFrom()).get();
+
+        AmountOfUserCurrency fromExchangeCurrency = amountOfUserCurrencyRepository
+                .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
+                        baseCurrency.getId()))
+                .get();
+        if (fromExchangeCurrency.getAmount() < exchangeCurrency.getCount()) {
+            throw new RuntimeException("Not enough balance on wallet");
         }
-        Currency exchangeToCurrency = currencyRepository.findByName(exchangeCurrencyDto.getCurrencyTo()).get();
-        AmountOfUserCurrency amountOfUserToExchangeCurrency = amountOfUserCurrencyRepository.findById(
-                new AmountOfUserCurrencyId(exchangeCurrencyDto.getSecretKey(),
-                        exchangeToCurrency.getId())).get();
-        amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() - exchangeCurrencyDto.getCount());
-        ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency,
-                exchangeToCurrency).get();
-        amountOfUserToExchangeCurrency.setAmount(exchangeRate.getExchangeRate()
-                * exchangeCurrencyDto.getCount()
-                + amountOfUserToExchangeCurrency.getAmount());
-        amountOfUserCurrencyRepository.save(amountOfUserCurrency);
-        amountOfUserCurrencyRepository.save(amountOfUserToExchangeCurrency);
-        return new BalanceOperationDto.Response.ExchangeCurrencyDto(exchangeCurrencyDto.getCurrencyFrom(),
-                exchangeCurrencyDto.getCurrencyTo(),
-                exchangeCurrencyDto.getCount(),
-                amountOfUserToExchangeCurrency.getAmount());
+
+        Currency exchangeToCurrency = currencyRepository.findByName(exchangeCurrency.getCurrencyTo()).get();
+
+        AmountOfUserCurrency toExchangeCurrency = amountOfUserCurrencyRepository
+                .findById(new AmountOfUserCurrencyId(exchangeCurrency.getSecretKey(),
+                        exchangeToCurrency.getId()))
+                .get();
+
+        AmountOfUserCurrency updatedToExchangeCurrency = exchangeCurrency(fromExchangeCurrency,
+                toExchangeCurrency,
+                exchangeCurrency.getCount());
+
+        saveTransaction(TransactionType.EXCHANGE, exchangeCurrency.getSecretKey());
+
+        return new BalanceOperationDto.Response.ExchangeCurrency(exchangeCurrency.getCurrencyFrom(),
+                exchangeCurrency.getCurrencyTo(),
+                exchangeCurrency.getCount(),
+                updatedToExchangeCurrency.getAmount());
+    }
+
+    private AmountOfUserCurrency exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
+                                                  AmountOfUserCurrency toExchangeCurrency,
+                                                  Double amountOfExchange) {
+        ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(
+                fromExchangeCurrency.getCurrency(),
+                toExchangeCurrency.getCurrency()).get();
+
+        fromExchangeCurrency.setAmount(fromExchangeCurrency.getAmount() - amountOfExchange);
+        toExchangeCurrency.setAmount(exchangeRate.getExchangeRate()
+                * amountOfExchange
+                + toExchangeCurrency.getAmount());
+
+        amountOfUserCurrencyRepository.save(fromExchangeCurrency);
+        return amountOfUserCurrencyRepository.save(toExchangeCurrency);
+    }
+
+    private void saveTransaction(TransactionType type, String secretKey) {
+        transactionRepository.save(new Transaction(secretKey, type, new Timestamp(System.currentTimeMillis())));
     }
 }

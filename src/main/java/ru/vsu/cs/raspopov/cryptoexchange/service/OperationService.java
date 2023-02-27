@@ -1,4 +1,0 @@
-package ru.vsu.cs.raspopov.cryptoexchange.service;
-
-public interface OperationService {
-}

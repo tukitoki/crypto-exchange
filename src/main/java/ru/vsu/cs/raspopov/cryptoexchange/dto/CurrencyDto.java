@@ -30,27 +30,27 @@ public class CurrencyDto {
         double getAmount();
     }
     private interface Currencies {
-        List<CurrencyDto.Response.CurrencyExchangeDto> getCurrencies();
+        List<Response.CurrencyExchange> getCurrencies();
     }
 
     public static class Request {
         @Value
-        public static class SecretKeyCurrencyDto implements SecretKey, Name {
+        public static class SecretKeyCurrency implements SecretKey, Name {
             String secretKey;
             String name;
         }
         @Value
-        public static class ChangeExchangeRateDto implements SecretKey, Name, Currencies {
+        public static class ChangeExchangeRate implements SecretKey, Name, Currencies {
             String secretKey;
             @JsonProperty("base_currency")
             String name;
-            List<CurrencyDto.Response.CurrencyExchangeDto> currencies;
+            List<Response.CurrencyExchange> currencies;
         }
     }
 
     public static class Response {
         @Value
-        public static class CurrencyExchangeDto implements ExchangeRate, Name {
+        public static class CurrencyExchange implements ExchangeRate, Name {
             String name;
             double exchangeRate;
         }

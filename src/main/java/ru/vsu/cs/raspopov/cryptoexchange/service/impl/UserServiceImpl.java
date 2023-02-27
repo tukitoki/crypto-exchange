@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
         } else if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("username already present");
         }
+
         User user = userMapper.toEntity(userRegistrationDto);
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);

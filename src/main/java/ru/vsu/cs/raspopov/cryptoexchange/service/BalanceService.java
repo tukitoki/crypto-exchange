@@ -11,12 +11,12 @@ public interface BalanceService {
     List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto);
 
     AmountOfUserCurrencyDto.Response.CurrencyAmount replenishmentBalance(
-            BalanceOperationDto.Request.ReplenishmentBalanceDto balanceDto);
+            BalanceOperationDto.Request.ReplenishmentBalance balanceDto);
 
     AmountOfUserCurrencyDto.Response.CurrencyAmount withdrawalMoney(
-            BalanceOperationDto.Request.WithdrawalBalanceDto balanceDto);
+            BalanceOperationDto.Request.WithdrawalBalance balanceDto);
 
-    BalanceOperationDto.Response.ExchangeCurrencyDto exchangeCurrency(
-            BalanceOperationDto.Request.ExchangeCurrencyDto exchangeCurrencyDto);
+    BalanceOperationDto.Response.ExchangeCurrency exchangeCurrency(
+            BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency);
 
 }

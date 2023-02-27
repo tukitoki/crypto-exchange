@@ -28,8 +28,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     //TODO: сделать грамотное отображение double числа
     @Override
-    public List<CurrencyDto.Response.CurrencyExchangeDto> getExchangeRate(
-            CurrencyDto.Request.SecretKeyCurrencyDto currencyDto) {
+    public List<CurrencyDto.Response.CurrencyExchange> getExchangeRate(
+            CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         if (userRepository.findById(currencyDto.getSecretKey()).isEmpty()) {
             throw new NoSuchElementException("wrong secret_key");
         }
@@ -39,9 +39,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         Currency baseCurrency = currencyRepository.findByName(currencyDto.getName()).get();
 
-        List<CurrencyDto.Response.CurrencyExchangeDto> exchangeRates = new ArrayList<>();
+        List<CurrencyDto.Response.CurrencyExchange> exchangeRates = new ArrayList<>();
         exchangeRateRepository.findAllByBaseCurrency(baseCurrency).forEach(exchangeRate -> {
-            exchangeRates.add(new CurrencyDto.Response.CurrencyExchangeDto(
+            exchangeRates.add(new CurrencyDto.Response.CurrencyExchange(
                     exchangeRate.getAnotherCurrency().getName(),
                     exchangeRate.getExchangeRate()));
         });
@@ -50,8 +50,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public List<CurrencyDto.Response.CurrencyExchangeDto> updateExchangeRates(
-            CurrencyDto.Request.ChangeExchangeRateDto currencyDto) {
+    public List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
+            CurrencyDto.Request.ChangeExchangeRate currencyDto) {
         if (userRepository.findById(currencyDto.getSecretKey()).isEmpty()) {
             throw new NoSuchElementException("wrong secret_key");
         }
@@ -59,9 +59,9 @@ public class CurrencyServiceImpl implements CurrencyService {
             throw new NoSuchElementException("wrong currency");
         }
 
-        List<CurrencyDto.Response.CurrencyExchangeDto> currencies = currencyDto.getCurrencies();
-        currencies.forEach(currencyExchangeDto -> {
-            if (currencyRepository.findByName(currencyExchangeDto.getName()).isEmpty()) {
+        List<CurrencyDto.Response.CurrencyExchange> currencies = currencyDto.getCurrencies();
+        currencies.forEach(currencyExchange -> {
+            if (currencyRepository.findByName(currencyExchange.getName()).isEmpty()) {
                 throw new NoSuchElementException("wrong currency");
             }
         });
@@ -71,23 +71,23 @@ public class CurrencyServiceImpl implements CurrencyService {
         return updateExchangeRates(currencies, baseCurrency);
     }
 
-    private List<CurrencyDto.Response.CurrencyExchangeDto> updateExchangeRates(
-            List<CurrencyDto.Response.CurrencyExchangeDto> currencies, Currency baseCurrency) {
-        List<CurrencyDto.Response.CurrencyExchangeDto> baseCurrencyExchangeRates = new ArrayList<>();
-        currencies.forEach(currencyExchangeDto -> {
-            Currency anotherCurrency = currencyRepository.findByName(currencyExchangeDto.getName()).get();
+    private List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
+            List<CurrencyDto.Response.CurrencyExchange> currencies, Currency baseCurrency) {
+        List<CurrencyDto.Response.CurrencyExchange> baseCurrencyExchangeRates = new ArrayList<>();
+        currencies.forEach(currencyExchange -> {
+            Currency anotherCurrency = currencyRepository.findByName(currencyExchange.getName()).get();
 
             ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency,
                     anotherCurrency).get();
-            exchangeRate.setExchangeRate(currencyExchangeDto.getExchangeRate());
+            exchangeRate.setExchangeRate(currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
 
-            baseCurrencyExchangeRates.add(new CurrencyDto.Response.CurrencyExchangeDto(anotherCurrency.getName(),
-                    currencyExchangeDto.getExchangeRate()));
+            baseCurrencyExchangeRates.add(new CurrencyDto.Response.CurrencyExchange(anotherCurrency.getName(),
+                    currencyExchange.getExchangeRate()));
 
             exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(anotherCurrency,
                     baseCurrency).get();
-            exchangeRate.setExchangeRate(1 / currencyExchangeDto.getExchangeRate());
+            exchangeRate.setExchangeRate(1 / currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
         });
         return baseCurrencyExchangeRates;
@@ -95,7 +95,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount getTotalAmountOfCurrency(
-            CurrencyDto.Request.SecretKeyCurrencyDto currencyDto) {
+            CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         if (userRepository.findById(currencyDto.getSecretKey()).isEmpty()) {
             throw new NoSuchElementException("wrong secret_key");
         }

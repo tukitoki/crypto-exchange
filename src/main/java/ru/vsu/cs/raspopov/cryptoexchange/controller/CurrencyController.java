@@ -20,16 +20,16 @@ public class CurrencyController {
     private final CurrencyService currencyService;
 
     @GetMapping("currency/exchange-rate")
-    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchangeDto>> getExchangeRate(
-            @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrencyDto currencyDto) {
+    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> getExchangeRate(
+            @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(currencyService.getExchangeRate(currencyDto));
     }
 
     @PostMapping("currency/change-exchange-rate")
-    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchangeDto>> changeExchangeRates(
-            @RequestBody @NotNull CurrencyDto.Request.ChangeExchangeRateDto currencyDto) {
+    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> changeExchangeRates(
+            @RequestBody @NotNull CurrencyDto.Request.ChangeExchangeRate currencyDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(currencyService.updateExchangeRates(currencyDto));
@@ -37,7 +37,7 @@ public class CurrencyController {
 
     @GetMapping("currency/total-currency-amount")
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> getTotalAmountOfCurrency(
-            @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrencyDto currencyDto) {
+            @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(currencyService.getTotalAmountOfCurrency(currencyDto));

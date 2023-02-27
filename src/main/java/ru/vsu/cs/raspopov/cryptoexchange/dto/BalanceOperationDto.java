@@ -55,14 +55,14 @@ public class BalanceOperationDto {
 
     public static class Request {
         @Value
-        public static class ReplenishmentBalanceDto implements SecretKey, Currency, Count {
+        public static class ReplenishmentBalance implements SecretKey, Currency, Count {
             String secretKey;
             String currency;
             double count;
         }
 
         @Value
-        public static class WithdrawalBalanceDto implements SecretKey, Currency, Count, MoneyWithdrawalPlatform {
+        public static class WithdrawalBalance implements SecretKey, Currency, Count, MoneyWithdrawalPlatform {
             String secretKey;
             String currency;
             double count;
@@ -70,7 +70,7 @@ public class BalanceOperationDto {
         }
 
         @Value
-        public static class ExchangeCurrencyDto implements SecretKey, CurrencyFrom, CurrencyTo, Count {
+        public static class ExchangeCurrency implements SecretKey, CurrencyFrom, CurrencyTo, Count {
             String secretKey;
             String currencyFrom;
             String currencyTo;
@@ -82,7 +82,7 @@ public class BalanceOperationDto {
     public static class Response{
 
         @Value
-        public static class ExchangeCurrencyDto implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
+        public static class ExchangeCurrency implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
             String currencyFrom;
             String currencyTo;
             double amountFrom;

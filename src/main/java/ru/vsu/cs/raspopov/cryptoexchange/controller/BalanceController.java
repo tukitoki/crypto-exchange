@@ -30,25 +30,25 @@ public class BalanceController {
 
     @PostMapping("balance/replenishment")
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> replenishmentBalance(
-            @RequestBody @NotNull @Valid BalanceOperationDto.Request.ReplenishmentBalanceDto replenishmentBalanceDto) {
+            @RequestBody @NotNull @Valid BalanceOperationDto.Request.ReplenishmentBalance replenishmentBalance) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(balanceService.replenishmentBalance(replenishmentBalanceDto));
+                .body(balanceService.replenishmentBalance(replenishmentBalance));
     }
 
     @PostMapping("balance/withdrawal")
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> withdrawalMoney(
-            @RequestBody @NotNull @Valid BalanceOperationDto.Request.WithdrawalBalanceDto withdrawalBalanceDto) {
+            @RequestBody @NotNull @Valid BalanceOperationDto.Request.WithdrawalBalance withdrawalBalance) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(balanceService.withdrawalMoney(withdrawalBalanceDto));
+                .body(balanceService.withdrawalMoney(withdrawalBalance));
     }
 
     @PostMapping("balance/exchange")
-    public ResponseEntity<BalanceOperationDto.Response.ExchangeCurrencyDto> exchangeCurrency(
-            @RequestBody @NotNull @Valid BalanceOperationDto.Request.ExchangeCurrencyDto exchangeCurrencyDto) {
+    public ResponseEntity<BalanceOperationDto.Response.ExchangeCurrency> exchangeCurrency(
+            @RequestBody @NotNull @Valid BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(balanceService.exchangeCurrency(exchangeCurrencyDto));
+                .body(balanceService.exchangeCurrency(exchangeCurrency));
     }
 }
