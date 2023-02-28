@@ -7,12 +7,6 @@ import java.util.List;
 
 public interface CurrencyService {
 
-    List<CurrencyDto.Response.CurrencyExchange> getExchangeRate(
-            CurrencyDto.Request.SecretKeyCurrency currencyDto);
-
-    List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
-            CurrencyDto.Request.ChangeExchangeRate currencyDto);
-
     AmountOfUserCurrencyDto.Response.CurrencyAmount getTotalAmountOfCurrency(
             CurrencyDto.Request.SecretKeyCurrency currencyDto);
 

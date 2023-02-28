@@ -2,41 +2,92 @@ package ru.vsu.cs.raspopov.cryptoexchange.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extension;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
-
-import javax.swing.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(Extension.class)
 class BalanceControllerTest {
 
     @Mock
-    BalanceService balanceService;
-
+    private BalanceService balanceService;
     @InjectMocks
-    BalanceController balanceController;
+    private BalanceController balanceController;
 
-//    @Test
-//    void walletBalance_ReturnsValidResponseEntity() {
-//        //given
-//        var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 0),
-//                new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", 1000),
-//                new AmountOfUserCurrencyDto.Response.CurrencyAmount("BTC", 0.523));
-//        var user = new User()
-//
-//        Mockito.doReturn(userWallet).when(balanceService.getUserBalance());
-//        //when
-//
-//        //then
-//    }
+    @Test
+    void walletBalance_ReturnsValidResponseEntity() {
+        var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 0.0),
+                new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", 0.0),
+                new AmountOfUserCurrencyDto.Response.CurrencyAmount("BTC", 0.1));
+        UserDto userDto = new UserDto();
 
+        doReturn(userWallet).when(this.balanceService).getUserBalance(userDto);
+
+        var responseEntity = this.balanceController.walletBalance(userDto);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(userWallet, responseEntity.getBody());
+    }
+
+    @Test
+    void replenishmentBalance_ReturnValidResponseEntity() {
+        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 2000.0);
+        var replBalance = new BalanceOperationDto.Request
+                .ReplenishmentBalance("fff", "RUB", 2000.0);
+
+        doReturn(currency).when(this.balanceService).replenishmentBalance(replBalance);
+
+        var responseEntity = this.balanceController.replenishmentBalance(replBalance);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(currency, responseEntity.getBody());
+    }
+
+    @Test
+    void withdrawalMoney_ReturnValidResponseEntity() {
+        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", 200.0);
+        var withdrBalance = new BalanceOperationDto.Request
+                .WithdrawalBalance("fff", "TON", 200.0, "AAA");
+
+        doReturn(currency).when(this.balanceService).withdrawalMoney(withdrBalance);
+
+        var responseEntity = this.balanceController.withdrawalMoney(withdrBalance);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(currency, responseEntity.getBody());
+    }
+
+    @Test
+    void exchangeCurrency_ReturnValidResponseEntity() {
+        var currency = new BalanceOperationDto.Request
+                .ExchangeCurrency("fff", "RUB", "TON", 2.0);
+        var exchangeBalance = new BalanceOperationDto.Response
+                .ExchangeCurrency("RUB", "TON", 0.0, 2.0);
+
+        doReturn(exchangeBalance).when(this.balanceService).exchangeCurrency(currency);
+
+        var responseEntity = this.balanceController.exchangeCurrency(currency);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(exchangeBalance, responseEntity.getBody());
+    }
 }

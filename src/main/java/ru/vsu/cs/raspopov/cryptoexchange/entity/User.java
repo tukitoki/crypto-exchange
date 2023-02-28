@@ -1,9 +1,5 @@
 package ru.vsu.cs.raspopov.cryptoexchange.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +7,10 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 

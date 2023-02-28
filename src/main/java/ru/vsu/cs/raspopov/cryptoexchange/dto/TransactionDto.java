@@ -2,12 +2,11 @@ package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.TransactionType;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class TransactionDto {
 

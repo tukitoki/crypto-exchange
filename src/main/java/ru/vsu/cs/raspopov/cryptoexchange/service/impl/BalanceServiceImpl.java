@@ -33,8 +33,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto) {
         User user = ValidationUtil.validUser(userRepository.findById(
-                UUID.fromString(userDto.getSecretKey()))
-        );
+                UUID.fromString(userDto.getSecretKey())));
         ValidationUtil.validUserRole(user, Role.USER);
 
         List<AmountOfUserCurrencyDto.Response.CurrencyAmount> userWallet = new ArrayList<>();
@@ -79,8 +78,8 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount withdrawalMoney(
             BalanceOperationDto.Request.WithdrawalBalance balanceDto) {
-        User user = userRepository.findById(UUID.fromString(balanceDto.getSecretKey()))
-                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        User user = ValidationUtil.validUser(userRepository.findById(
+                UUID.fromString(balanceDto.getSecretKey())));
         ValidationUtil.validUserRole(user, Role.USER);
 
         var currency = ValidationUtil.validCurrency(currencyRepository.findByName(
