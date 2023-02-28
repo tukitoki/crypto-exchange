@@ -29,7 +29,7 @@
 - ### 3 базовые валюты: RUB, TON, BTC с курсами относительно друг друга.
 
 ## USER API:
-- Регистрация пользователя. POST запрос. URI **http://localhost:8080/api/user**
+- ### Регистрация пользователя. POST запрос. URI **http://localhost:8080/api/user**
 
 Примеры запросов:
 
@@ -43,6 +43,7 @@ RESPONSE (HttpStatus.OK):
 {
     "secret_key": "212064b9-4e59-4db3-a7cd-34ac97baa046"
 }
+
 ---
 REQUEST:
 {
@@ -52,6 +53,7 @@ REQUEST:
 
 RESPONSE (HttpStatus.BAD_REQUEST):
 Email already present
+
 ---
 REQUEST:
 {
@@ -59,7 +61,7 @@ REQUEST:
 "email": "sggad@mail.ru"
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Username already present
+RESPONSE (HttpStatus.BAD_REQUEST): Username already present
 
 ---
 REQUEST: 
@@ -67,7 +69,7 @@ REQUEST:
 "username": "fff"
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Enter your email
+RESPONSE (HttpStatus.BAD_REQUEST): Enter your email
 
 ---
 
@@ -76,9 +78,9 @@ REQUEST:
     "email": "sgghad@mail.ru"
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Enter your username
+RESPONSE (HttpStatus.BAD_REQUEST): Enter your username
 
-- Пополнение баланса. POST запрос. URI **http://localhost:8080/api/balance/replenishment**
+- ### Пополнение баланса. POST запрос. URI **http://localhost:8080/api/balance/replenishment**
 
 Примеры запросов:
 
@@ -89,7 +91,7 @@ REQUEST:
 "amount": "20"
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 {
 "amount": 20.0,
 "currency": "RUB"
@@ -102,7 +104,7 @@ REQUEST:
 "currency": "RUB",
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Amount should not be empty
+RESPONSE (HttpStatus.BAD_REQUEST): Amount should not be empty
 
 ---
 REQUEST:
@@ -112,7 +114,7 @@ REQUEST:
 "amount": 4
 }
 
-RESPONSE(HttpStatus.NOT_FOUND): Wrong user secret_key
+RESPONSE (HttpStatus.NOT_FOUND): Wrong user secret_key
 
 ---
 
@@ -123,9 +125,9 @@ REQUEST:
 "amount": 4
 }
 
-RESPONSE(HttpStatus.NOT_FOUND): Wrong currency name
+RESPONSE (HttpStatus.NOT_FOUND): Wrong currency name
 
-- Вывод денег. POST запрос. URI **http://localhost:8080/api/balance/withdrawal**
+- ### Вывод денег. POST запрос. URI **http://localhost:8080/api/balance/withdrawal**
 
 Примеры запросов:
 
@@ -137,7 +139,7 @@ REQUEST:
 "credit_card": "0044 0004 0004 0004"
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 {
 "amount": 16.0,
 "currency": "RUB"
@@ -152,7 +154,7 @@ REQUEST:
 "wallet": "AsS5A2SASd2as3q5sd2asd53a1s5"
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 {
 "amount": 12.0,
 "currency": "RUB"
@@ -168,9 +170,9 @@ REQUEST:
 "wallet": "AsS5A2SASd2as3q5sd2asd53a1s5"
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Not enough balance on wallet
+RESPONSE (HttpStatus.BAD_REQUEST): Not enough balance on wallet
 
-- Просмотр баланса своего кошелька. GET запрос. URI **http://localhost:8080/api/balance**
+- ### Просмотр баланса своего кошелька. GET запрос. URI **http://localhost:8080/api/balance**
 
 Примеры запросов:
 
@@ -196,26 +198,24 @@ RESPONSE(HttpStatus.OK):
 ]
 
 ---
-
-
 REQUEST:
 {
 "secret_key": "89059968-6398-43b5-85d6-65f87361fba",
 }
 
-RESPONSE(HttpStatus.NOT_FOUND): Wrong user secret_key
+RESPONSE (HttpStatus.NOT_FOUND): Wrong user secret_key
 
 ---
-REQUEST(ADMIN secret_key):
+REQUEST (ADMIN secret_key):
 {
 "secret_key": "f24de643-ace3-4224-8534-681d6c329aca"
 }
 
-RESPONSE(HttpStatus.FORBIDDEN): Access only for USER
+RESPONSE (HttpStatus.FORBIDDEN): Access only for USER
 
 ---
 
-Просмотр актуальных курсов валют. GET запрос. URI **http://localhost:8080/api/currency/exchange-rate**
+- ### Просмотр актуальных курсов валют(ADMIN AND USER). GET запрос. URI **http://localhost:8080/api/currency/exchange-rate**
 
 Примеры запросов:
 
@@ -225,7 +225,7 @@ REQUEST:
 "currency": "RUB"
 }
 
-RESPONSE(HttpStatus.OK): 
+RESPONSE (HttpStatus.OK): 
 [
 {
 "currency": "TON",
@@ -245,8 +245,7 @@ REQUEST:
 "currency": "TON"
 }
 
-RESPONSE(HttpStatus.OK):
-
+RESPONSE (HttpStatus.OK):
 [
 {
 "currency": "RUB",
@@ -258,7 +257,7 @@ RESPONSE(HttpStatus.OK):
 }
 ]
 
-Обмен валют по установленному курсу. POST запрос. URI **http://localhost:8080/api/balance/exchange**
+- ### Обмен валют по установленному курсу. POST запрос. URI **http://localhost:8080/api/balance/exchange**
 
 Примеры запросов:
 
@@ -269,7 +268,7 @@ REQUEST: {
 "amount": "2000"
 }
 
-RESPONSE(HttpStatus.BAD_REQUEST): Not enough balance on wallet
+RESPONSE (HttpStatus.BAD_REQUEST): Not enough balance on wallet
 
 ---
 REQUEST: {
@@ -279,7 +278,7 @@ REQUEST: {
 "amount": "4"
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 {
 "amount_from": 4.0,
 "amount_to": 0.022,
@@ -290,7 +289,7 @@ RESPONSE(HttpStatus.OK):
 ---
 
 ## ADMIN API
-- Изменить курс валют. POST запрос. URI **http://localhost:8080/api/currency/change-exchange-rate**
+- ### Изменить курс валют. POST запрос. URI **http://localhost:8080/api/currency/change-exchange-rate**
 
 Примеры запросов:
 
@@ -310,7 +309,7 @@ REQUEST:
 ]
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 [
 {
 "currency": "BTC",
@@ -321,8 +320,9 @@ RESPONSE(HttpStatus.OK):
 "exchange_rate": 184.0
 }
 ]
+
 ---
-REQUEST(USER secret_key):
+REQUEST (USER secret_key):
 {
 "secret_key": "89059968-6398-43b5-85d6-65f87361efba",
 "base_currency": "TON",
@@ -338,9 +338,9 @@ REQUEST(USER secret_key):
 ]
 }
 
-RESPONSE(HttpStatus.FORBIDDEN): Access only for ADMIN
+RESPONSE (HttpStatus.FORBIDDEN): Access only for ADMIN
 
-- Посмотреть общую сумму на всех пользовательских счетах для указанной валюты. GET запрос. URI **http://localhost:8080/api/currency/total-currency-amount**
+- ### Посмотреть общую сумму на всех пользовательских счетах для указанной валюты. GET запрос. URI **http://localhost:8080/api/currency/total-currency-amount**
 
 Примеры запросов:
 
@@ -357,20 +357,19 @@ RESPONSE(HttpStatus.OK):
 }
 
 ---
-
 REQUEST:
 {
 "secret_key": "f24de643-ace3-4224-8534-681d6c329aca",
 "currency": "TON"
 }
 
-RESPONSE(HttpStatus.OK):
+RESPONSE (HttpStatus.OK):
 {
 "amount": 0.044,
 "currency": "TON"
 }
 
-- Посмотреть количество операций, которые были проведены за указанный период (например, за последние сутки). GET запрос. URI **http://localhost:8080/api/transaction/count**
+- ### Посмотреть количество операций, которые были проведены за указанный период (например, за последние сутки). GET запрос. URI **http://localhost:8080/api/transaction/count**
 
 Примеры запросов:
 
