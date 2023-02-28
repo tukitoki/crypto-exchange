@@ -4,14 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.TransactionDto;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.Role;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.Transaction;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.TransactionType;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.TransactionRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
-import java.util.NoSuchElementException;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -25,8 +27,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionDto.Response.TransactionCounter getTransactionCount(
             TransactionDto.Request.TransactionFromTo transactionDto) {
-        User user = userRepository.findById(UUID.fromString(transactionDto.getSecretKey()))
-                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        User user = ValidationUtil.validUser(userRepository.findById(
+                UUID.fromString(transactionDto.getSecretKey()))
+        );
         ValidationUtil.validUserRole(user, Role.ADMIN);
 
         int count = transactionRepository.getCountTransactionInTime(transactionDto.getDateFrom(),
@@ -35,5 +38,11 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("ADMIN successfully get transaction count");
 
         return new TransactionDto.Response.TransactionCounter(count);
+    }
+
+    @Override
+    public TransactionDto.Response.Transaction saveTransaction(TransactionType type, String secretKey) {
+        Transaction transaction = transactionRepository.save(new Transaction(secretKey, type, LocalDate.now()));
+        return new TransactionDto.Response.Transaction(transaction.getSecretKey(), transaction.getDate());
     }
 }

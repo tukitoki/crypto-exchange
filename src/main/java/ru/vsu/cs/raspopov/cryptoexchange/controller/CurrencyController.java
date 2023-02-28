@@ -4,6 +4,7 @@ package ru.vsu.cs.raspopov.cryptoexchange.controller;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
@@ -19,7 +20,8 @@ public class CurrencyController {
 
     private final CurrencyService currencyService;
 
-    @GetMapping("currency/exchange-rate")
+    @GetMapping(path = "currency/exchange-rate",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> getExchangeRate(
             @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         return ResponseEntity
@@ -27,7 +29,8 @@ public class CurrencyController {
                 .body(currencyService.getExchangeRate(currencyDto));
     }
 
-    @PostMapping("currency/change-exchange-rate")
+    @PostMapping(path = "currency/change-exchange-rate",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> changeExchangeRates(
             @RequestBody @NotNull CurrencyDto.Request.ChangeExchangeRate currencyDto) {
         return ResponseEntity
@@ -35,7 +38,8 @@ public class CurrencyController {
                 .body(currencyService.updateExchangeRates(currencyDto));
     }
 
-    @GetMapping("currency/total-currency-amount")
+    @GetMapping(path = "currency/total-currency-amount",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> getTotalAmountOfCurrency(
             @RequestBody @NotNull CurrencyDto.Request.SecretKeyCurrency currencyDto) {
         return ResponseEntity

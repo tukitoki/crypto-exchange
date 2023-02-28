@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.*;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
@@ -15,7 +16,6 @@ import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -32,11 +32,11 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public List<CurrencyDto.Response.CurrencyExchange> getExchangeRate(
             CurrencyDto.Request.SecretKeyCurrency currencyDto) {
-        userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
-                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
-        ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));
+        ValidationUtil.validUser(userRepository.findById(
+                UUID.fromString(currencyDto.getSecretKey())));
 
-        Currency baseCurrency = currencyRepository.findByName(currencyDto.getCurrency()).get();
+        Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
+                currencyDto.getCurrency()));
 
         List<CurrencyDto.Response.CurrencyExchange> exchangeRates = new ArrayList<>();
         exchangeRateRepository.findAllByBaseCurrency(baseCurrency).forEach(exchangeRate -> {
@@ -53,17 +53,17 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
             CurrencyDto.Request.ChangeExchangeRate currencyDto) {
-        User user = userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
-                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        User user = ValidationUtil.validUser(userRepository.findById(
+                UUID.fromString(currencyDto.getSecretKey())));
         ValidationUtil.validUserRole(user, Role.ADMIN);
-        ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));
+
+        Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
+                currencyDto.getCurrency()));
 
         List<CurrencyDto.Response.CurrencyExchange> currencies = currencyDto.getCurrencies();
         currencies.forEach(currencyExchange -> {
             ValidationUtil.validCurrency(currencyRepository.findByName(currencyExchange.getCurrency()));
         });
-
-        Currency baseCurrency = currencyRepository.findByName(currencyDto.getCurrency()).get();
 
         return updateExchangeRates(currencies, baseCurrency);
     }
@@ -72,9 +72,9 @@ public class CurrencyServiceImpl implements CurrencyService {
             List<CurrencyDto.Response.CurrencyExchange> currencies, Currency baseCurrency) {
         List<CurrencyDto.Response.CurrencyExchange> baseCurrencyExchangeRates = new ArrayList<>();
         currencies.forEach(currencyExchange -> {
-            Currency anotherCurrency = currencyRepository.findByName(currencyExchange.getCurrency()).get();
+            var anotherCurrency = currencyRepository.findByName(currencyExchange.getCurrency()).get();
 
-            ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency,
+            var exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency,
                     anotherCurrency).get();
             exchangeRate.setExchangeRate(currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
@@ -96,12 +96,13 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount getTotalAmountOfCurrency(
             CurrencyDto.Request.SecretKeyCurrency currencyDto) {
-        User user = userRepository.findById(UUID.fromString(currencyDto.getSecretKey()))
-                .orElseThrow(() -> new NoSuchElementException("Wrong user secret_key"));
+        User user = ValidationUtil.validUser(userRepository.findById(
+                UUID.fromString(currencyDto.getSecretKey()))
+        );
         ValidationUtil.validUserRole(user, Role.ADMIN);
-        ValidationUtil.validCurrency(currencyRepository.findByName(currencyDto.getCurrency()));
 
-        Currency baseCurrency = currencyRepository.findByName(currencyDto.getCurrency()).get();
+        Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
+                currencyDto.getCurrency()));
 
         double totalCurrencyAmount = 0;
         for (AmountOfUserCurrency amountOfUserCurrency : amountOfUserCurrencyRepository
@@ -111,6 +112,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         log.info("ADMIN successfully get total amount of currency");
 
-        return new AmountOfUserCurrencyDto.Response.CurrencyAmount(currencyDto.getCurrency(), totalCurrencyAmount);
+        return new AmountOfUserCurrencyDto.Response.CurrencyAmount(currencyDto.getCurrency(),
+                totalCurrencyAmount);
     }
 }

@@ -26,10 +26,12 @@ public class BalanceOperationDto {
     }
     private interface AmountTo {
         @Positive(message = "Amount_to should be >0")
+        @JsonProperty("amount_to")
         Double getAmountTo();
     }
     private interface AmountFrom {
         @Positive(message = "Amount_from should be >0")
+        @JsonProperty("amount_from")
         Double getAmountFrom();
     }
 
@@ -58,7 +60,6 @@ public class BalanceOperationDto {
     }
 
     public enum Response {;
-
         @Value
         public static class ExchangeCurrency implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
             String currencyFrom;

@@ -2,6 +2,7 @@ package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public enum Fields {;
@@ -18,6 +19,7 @@ public enum Fields {;
     }
     protected interface Amount {
         @Positive(message = "Amount should be >0")
+        @NotNull(message = "Amount should not be empty")
         Double getAmount();
     }
 }

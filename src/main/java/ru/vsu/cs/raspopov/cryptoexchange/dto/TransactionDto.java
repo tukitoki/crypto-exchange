@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.TransactionType;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.TransactionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class TransactionDto {
     }
     private interface Date {
         @NotBlank
-        LocalDateTime getDate();
+        LocalDate getDate();
     }
     private interface DateFrom {
 
@@ -51,6 +51,11 @@ public class TransactionDto {
         @Value
         public static class TransactionCounter implements TransactionCount {
             Integer count;
+        }
+        @Value
+        public static class Transaction implements Fields.SecretKey, Date {
+            String secretKey;
+            LocalDate date;
         }
     }
 }

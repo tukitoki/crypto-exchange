@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
@@ -20,7 +21,8 @@ public class BalanceController {
 
     private final BalanceService balanceService;
 
-    @GetMapping("balance")
+    @GetMapping(path = "balance",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<AmountOfUserCurrencyDto.Response.CurrencyAmount>> walletBalance(
             @RequestBody @NotNull @Valid UserDto userDto) {
         return ResponseEntity
@@ -28,7 +30,8 @@ public class BalanceController {
                 .body(balanceService.getUserBalance(userDto));
     }
 
-    @PostMapping("balance/replenishment")
+    @PostMapping(path = "balance/replenishment",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> replenishmentBalance(
             @RequestBody @NotNull @Valid BalanceOperationDto.Request.ReplenishmentBalance replenishmentBalance) {
         return ResponseEntity
@@ -36,7 +39,8 @@ public class BalanceController {
                 .body(balanceService.replenishmentBalance(replenishmentBalance));
     }
 
-    @PostMapping("balance/withdrawal")
+    @PostMapping(path = "balance/withdrawal",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<AmountOfUserCurrencyDto.Response.CurrencyAmount> withdrawalMoney(
             @RequestBody @NotNull @Valid BalanceOperationDto.Request.WithdrawalBalance withdrawalBalance) {
         return ResponseEntity
@@ -44,7 +48,8 @@ public class BalanceController {
                 .body(balanceService.withdrawalMoney(withdrawalBalance));
     }
 
-    @PostMapping("balance/exchange")
+    @PostMapping(path = "balance/exchange",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<BalanceOperationDto.Response.ExchangeCurrency> exchangeCurrency(
             @RequestBody @NotNull @Valid BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
         return ResponseEntity

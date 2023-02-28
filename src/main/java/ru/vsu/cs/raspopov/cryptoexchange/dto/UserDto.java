@@ -14,5 +14,4 @@ public class UserDto {
     @JsonProperty("secret_key")
     @NotBlank
     private String secretKey;
-
 }

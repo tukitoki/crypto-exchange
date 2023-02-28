@@ -1,4 +1,4 @@
-package ru.vsu.cs.raspopov.cryptoexchange.entity;
+package ru.vsu.cs.raspopov.cryptoexchange.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
