@@ -1,4 +1,5 @@
-INSERT INTO exchange_user(username, role, email) VALUES('admin', 'ADMIN', 'admin@rule.ru');
+INSERT INTO exchange_user(user_id, username, role, email) VALUES('f24de643-ace3-4224-8534-681d6c329aca',
+                                                                 'admin', 'ADMIN', 'admin@rule.ru');
 INSERT INTO currency(name) VALUES('RUB');
 INSERT INTO currency(name) VALUES('TON');
 INSERT INTO currency(name) VALUES('BTC');
