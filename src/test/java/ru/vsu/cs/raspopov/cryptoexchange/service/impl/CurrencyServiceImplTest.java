@@ -23,6 +23,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -70,9 +71,9 @@ class CurrencyServiceImplTest {
                 new AmountOfUserCurrency(user, baseCurrency, new BigDecimal("434")),
                 new AmountOfUserCurrency(secondUser, baseCurrency, new BigDecimal("500"))
         );
-        Mockito.when(userRepository.findById(admin.getSecretKey())).thenReturn(Optional.of(admin));
-        Mockito.when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
-        Mockito.when(amountOfUserCurrencyRepository.findAllByCurrency(baseCurrency))
+        when(userRepository.findById(admin.getSecretKey())).thenReturn(Optional.of(admin));
+        when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
+        when(amountOfUserCurrencyRepository.findAllByCurrency(baseCurrency))
                 .thenReturn(amounts);
         var sumAmount = new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 "RUB",
@@ -95,7 +96,7 @@ class CurrencyServiceImplTest {
                 Role.ADMIN,
                 new ArrayList<>()
         );
-        Mockito.when(userRepository.findById(admin.getSecretKey())).thenReturn(Optional.empty());
+        when(userRepository.findById(admin.getSecretKey())).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class,
                 () -> currencyService.getTotalAmountOfCurrency(
                         new CurrencyDto.Request.SecretKeyCurrency(
@@ -113,7 +114,7 @@ class CurrencyServiceImplTest {
                 Role.USER,
                 new ArrayList<>()
         );
-        Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
+        when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         assertThrows(RuntimeException.class,
                 () -> currencyService.getTotalAmountOfCurrency(
                         new CurrencyDto.Request.SecretKeyCurrency(

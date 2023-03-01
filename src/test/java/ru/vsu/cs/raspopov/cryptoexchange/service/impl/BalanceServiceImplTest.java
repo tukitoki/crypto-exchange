@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -58,7 +59,7 @@ class BalanceServiceImplTest {
                 new ArrayList<>()
         );
         user.getWallet().add(new AmountOfUserCurrency(user, currency, new BigDecimal("120")));
-        Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
+        when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         var userDto = new UserDto.Request.UserSecretKey();
         userDto.setSecretKey(user.getSecretKey().toString());
         var currencies = balanceService.getUserBalance(userDto);
@@ -88,13 +89,13 @@ class BalanceServiceImplTest {
         var amountOfCurrency = new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 "RUB", new BigDecimal("500")
         );
-        Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
-        Mockito.when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
-        Mockito.when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
+        when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
+        when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
+        when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
                         user.getSecretKey(),
                         currency.getId())))
                 .thenReturn(Optional.of(amountOfUserCurrency));
-        Mockito.when(transactionService.saveTransaction(
+        when(transactionService.saveTransaction(
                         TransactionType.REPLENISHMENT,
                         user.getSecretKey().toString()))
                 .thenReturn(new TransactionDto.Response.Transaction(
@@ -133,13 +134,13 @@ class BalanceServiceImplTest {
                 "RUB", new BigDecimal("100")
         );
 
-        Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
-        Mockito.when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
-        Mockito.when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
+        when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
+        when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
+        when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
                         user.getSecretKey(),
                         currency.getId())))
                 .thenReturn(Optional.of(amountOfUserCurrency));
-        Mockito.when(transactionService.saveTransaction(
+        when(transactionService.saveTransaction(
                         TransactionType.REPLENISHMENT,
                         user.getSecretKey().toString()))
                 .thenReturn(new TransactionDto.Response.Transaction(
@@ -187,17 +188,17 @@ class BalanceServiceImplTest {
                 "RUB", "RUB", new BigDecimal("200"), new BigDecimal("200")
         );
         var exchangeRate = new ExchangeRate(1, baseCurrency, exchangeableCurrency, new BigDecimal("1"));
-        Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
-        Mockito.when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
-        Mockito.when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
+        when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
+        when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
+        when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
                         user.getSecretKey(),
                         baseCurrency.getId())))
                 .thenReturn(Optional.of(amountOfBaseCurrency));
-        Mockito.when(exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency, baseCurrency))
+        when(exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(baseCurrency, baseCurrency))
                 .thenReturn(Optional.of(exchangeRate));
-        Mockito.when(amountOfUserCurrencyRepository.save(amountOfBaseCurrency))
+        when(amountOfUserCurrencyRepository.save(amountOfBaseCurrency))
                 .thenReturn(amountOfBaseCurrency);
-        Mockito.when(transactionService.saveTransaction(
+        when(transactionService.saveTransaction(
                         TransactionType.REPLENISHMENT,
                         user.getSecretKey().toString()))
                 .thenReturn(new TransactionDto.Response.Transaction(

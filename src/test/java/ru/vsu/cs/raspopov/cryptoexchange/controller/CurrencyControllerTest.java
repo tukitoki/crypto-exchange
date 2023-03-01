@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CurrencyControllerTest {
@@ -30,7 +31,7 @@ class CurrencyControllerTest {
                 new BigDecimal("2000"));
 
         var currencyDto = new CurrencyDto.Request.SecretKeyCurrency("fff", "RUB");
-        Mockito.doReturn(amount).when(this.currencyService).getTotalAmountOfCurrency(currencyDto);
+        doReturn(amount).when(this.currencyService).getTotalAmountOfCurrency(currencyDto);
         var responseEntity = this.currencyController.getTotalAmountOfCurrency(currencyDto);
 
         assertNotNull(responseEntity);
