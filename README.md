@@ -19,6 +19,8 @@
 - #### Формат может быть изменен добавлением header путем добавления accept:application/json или accept:application/xml к HTTP-запросу
 - #### Подключить и настроить swagger
 
+### Просмотр API: http://localhost:8080/swagger-ui/
+
 ## Запуск
 Для запуска приложения необходимо иметь предустановленный PostreSQL
 на компьтере. Порядок:
