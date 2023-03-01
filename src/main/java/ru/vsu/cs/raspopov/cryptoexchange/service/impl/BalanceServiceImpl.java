@@ -152,8 +152,8 @@ public class BalanceServiceImpl implements BalanceService {
     }
 
     private BigDecimal exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
-                                    AmountOfUserCurrency toExchangeCurrency,
-                                    BigDecimal amountOfExchange) {
+                                        AmountOfUserCurrency toExchangeCurrency,
+                                        BigDecimal amountOfExchange) {
         ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(
                 fromExchangeCurrency.getCurrency(),
                 toExchangeCurrency.getCurrency()).get();
@@ -161,7 +161,7 @@ public class BalanceServiceImpl implements BalanceService {
         fromExchangeCurrency.setAmount(fromExchangeCurrency.getAmount().subtract(amountOfExchange));
 
         BigDecimal changedCurrency = exchangeRate.getExchangeRate().multiply(amountOfExchange);
-        changedCurrency.add(toExchangeCurrency.getAmount());
+        changedCurrency = changedCurrency.add(toExchangeCurrency.getAmount());
         toExchangeCurrency.setAmount(changedCurrency);
 
         amountOfUserCurrencyRepository.save(fromExchangeCurrency);

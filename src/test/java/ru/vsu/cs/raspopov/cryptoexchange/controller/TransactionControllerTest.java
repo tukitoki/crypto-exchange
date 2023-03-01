@@ -6,17 +6,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.TransactionDto;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
-import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)

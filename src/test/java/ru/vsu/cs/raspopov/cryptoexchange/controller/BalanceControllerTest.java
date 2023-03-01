@@ -28,7 +28,8 @@ class BalanceControllerTest {
 
     @Test
     void walletBalance_ReturnsValidResponseEntity() {
-        var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", new BigDecimal("0")),
+        var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB",
+                        new BigDecimal("0")),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", new BigDecimal("0")),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("BTC", new BigDecimal("0.1")));
         var userDto = new UserDto.Request.UserSecretKey();
@@ -44,7 +45,8 @@ class BalanceControllerTest {
 
     @Test
     void replenishmentBalance_ReturnValidResponseEntity() {
-        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", new BigDecimal("2000"));
+        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB",
+                new BigDecimal("2000"));
         var replBalance = new BalanceOperationDto.Request
                 .ReplenishmentBalance("fff", "RUB", new BigDecimal("2000"));
 
@@ -59,9 +61,12 @@ class BalanceControllerTest {
 
     @Test
     void withdrawalMoney_ReturnValidResponseEntity() {
-        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", new BigDecimal("2000"));
+        var currency = new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON",
+                new BigDecimal("2000"));
         var withdrBalance = new BalanceOperationDto.Request
-                .WithdrawalBalance("fff", "TON", new BigDecimal("200"), "AAA");
+                .WithdrawalBalance("fff", "TON",
+                new BigDecimal("200"),
+                "AAA");
 
         doReturn(currency).when(this.balanceService).withdrawalMoney(withdrBalance);
 
@@ -77,7 +82,9 @@ class BalanceControllerTest {
         var currency = new BalanceOperationDto.Request
                 .ExchangeCurrency("fff", "RUB", "TON", new BigDecimal("2"));
         var exchangeBalance = new BalanceOperationDto.Response
-                .ExchangeCurrency("RUB", "TON", new BigDecimal("0"), new BigDecimal("2"));
+                .ExchangeCurrency("RUB", "TON",
+                new BigDecimal("0"),
+                new BigDecimal("2"));
 
         doReturn(exchangeBalance).when(this.balanceService).exchangeCurrency(currency);
 

@@ -26,7 +26,8 @@ class CurrencyControllerTest {
 
     @Test
     void getTotalAmountOfCurrency_ReturnsValidResponseEntity() {
-        var amount = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", new BigDecimal("2000"));
+        var amount = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB",
+                new BigDecimal("2000"));
 
         var currencyDto = new CurrencyDto.Request.SecretKeyCurrency("fff", "RUB");
         Mockito.doReturn(amount).when(this.currencyService).getTotalAmountOfCurrency(currencyDto);

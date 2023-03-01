@@ -101,7 +101,7 @@ class CurrencyServiceImplTest {
                         new CurrencyDto.Request.SecretKeyCurrency(
                                 admin.getSecretKey().toString(),
                                 "RUB")
-        ));
+                ));
     }
 
     @Test

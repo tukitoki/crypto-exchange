@@ -2,24 +2,15 @@ package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.TransactionDto;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.Currency;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.Transaction;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.TransactionType;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.TransactionRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 
 import java.time.LocalDate;
@@ -27,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)

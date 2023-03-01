@@ -66,7 +66,8 @@ class ExchangeServiceImplTest {
                 user.getSecretKey().toString(),
                 currency.getName()
         ));
-        var expected = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("TON", new BigDecimal("4.0")));
+        var expected = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("TON",
+                new BigDecimal("4.0")));
         assertEquals(expected, rates);
     }
 
@@ -96,8 +97,8 @@ class ExchangeServiceImplTest {
         when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class,
                 () -> exchangeService.getExchangeRate(new ExchangeCurrencyDto.Request.SecretKeyCurrency(
-                user.getSecretKey().toString(),
-                currency.getName()
-        )));
+                        user.getSecretKey().toString(),
+                        currency.getName()
+                )));
     }
 }

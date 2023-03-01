@@ -45,7 +45,8 @@ class ExchangeControllerTest {
                 new ExchangeCurrencyDto.Response.CurrencyExchange("RUB", new BigDecimal("0.1")),
                 new ExchangeCurrencyDto.Response.CurrencyExchange("BTC", new BigDecimal("0.05")));
 
-        var currencyDto = new ExchangeCurrencyDto.Request.ChangeExchangeRate("fff", "TON", changedExchangeRates);
+        var currencyDto = new ExchangeCurrencyDto.Request.ChangeExchangeRate("fff", "TON",
+                changedExchangeRates);
         doReturn(changedExchangeRates).when(this.exchangeService).updateExchangeRates(currencyDto);
         var responseEntity = this.exchangeController.changeExchangeRates(currencyDto);
 

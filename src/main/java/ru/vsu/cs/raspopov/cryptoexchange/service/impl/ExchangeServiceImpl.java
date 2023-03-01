@@ -15,7 +15,6 @@ import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,8 @@ public class ExchangeServiceImpl implements ExchangeService {
             exchangeRate.setExchangeRate(currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
 
-            baseCurrencyExchangeRates.add(new ExchangeCurrencyDto.Response.CurrencyExchange(anotherCurrency.getName(),
+            baseCurrencyExchangeRates.add(new ExchangeCurrencyDto.Response.CurrencyExchange(
+                    anotherCurrency.getName(),
                     currencyExchange.getExchangeRate()));
 
             exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(anotherCurrency,
