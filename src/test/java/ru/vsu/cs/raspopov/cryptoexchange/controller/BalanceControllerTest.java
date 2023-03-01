@@ -5,10 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extension;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
@@ -21,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(Extension.class)
+@ExtendWith(MockitoExtension.class)
 class BalanceControllerTest {
 
     @Mock
@@ -34,7 +31,7 @@ class BalanceControllerTest {
         var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 0.0),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", 0.0),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("BTC", 0.1));
-        UserDto userDto = new UserDto();
+        var userDto = new UserDto.Request.UserSecretKey();
 
         doReturn(userWallet).when(this.balanceService).getUserBalance(userDto);
 
