@@ -1,16 +1,16 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.ExchangeCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Currency;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.ExchangeRate;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
@@ -18,9 +18,11 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class ExchangeServiceImplTest {
 
@@ -59,11 +61,11 @@ class ExchangeServiceImplTest {
         when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
         when(exchangeRateRepository.findAllByBaseCurrency(currency))
                 .thenReturn(exchangeRates);
-        var rates = exchangeService.getExchangeRate(new CurrencyDto.Request.SecretKeyCurrency(
+        var rates = exchangeService.getExchangeRate(new ExchangeCurrencyDto.Request.SecretKeyCurrency(
                 user.getSecretKey().toString(),
                 currency.getName()
         ));
-        var expected = List.of(new CurrencyDto.Response.CurrencyExchange("TON", 4.0));
+        var expected = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("TON", 4.0));
         assertEquals(expected, rates);
     }
 
@@ -92,7 +94,7 @@ class ExchangeServiceImplTest {
         when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class,
-                () -> exchangeService.getExchangeRate(new CurrencyDto.Request.SecretKeyCurrency(
+                () -> exchangeService.getExchangeRate(new ExchangeCurrencyDto.Request.SecretKeyCurrency(
                 user.getSecretKey().toString(),
                 currency.getName()
         )));

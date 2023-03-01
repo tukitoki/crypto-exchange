@@ -2,7 +2,6 @@ package ru.vsu.cs.raspopov.cryptoexchange.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class BalanceControllerTest {
@@ -31,7 +30,7 @@ class BalanceControllerTest {
         var userWallet = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 0.0),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("TON", 0.0),
                 new AmountOfUserCurrencyDto.Response.CurrencyAmount("BTC", 0.1));
-        var userDto = new UserDto.Request.UserSecretKey();
+        var userDto = new UserDto.Request.UserSecretKey("fff");
 
         doReturn(userWallet).when(this.balanceService).getUserBalance(userDto);
 

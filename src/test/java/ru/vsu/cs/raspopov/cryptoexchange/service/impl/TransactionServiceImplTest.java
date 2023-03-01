@@ -2,7 +2,9 @@ package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,13 +43,21 @@ class TransactionServiceImplTest {
 
     @Test
     void getTransactionCount() {
+        User user = new User(
+                UUID.fromString("f24de643-ace3-4224-8534-681d6c329aca"),
+                "test",
+                "test@mail.ru",
+                Role.ADMIN,
+                new ArrayList<>()
+        );
         int count = 15;
         var counter = new TransactionDto.Response.TransactionCounter(count);
         var fromTo = new TransactionDto.Request.TransactionFromTo(
                 "f24de643-ace3-4224-8534-681d6c329aca",
                 LocalDate.of(2022, 12, 5), LocalDate.now());
 
-
+        when(userRepository.findById(user.getSecretKey()))
+                .thenReturn(Optional.of(user));
         when(transactionRepository.getCountTransactionInTime(fromTo.getDateFrom(),
                 fromTo.getDateTo())).thenReturn(count);
 
@@ -60,14 +71,11 @@ class TransactionServiceImplTest {
                 "f24de643-ace3-4224-8534-681d6c329aca", TransactionType.EXCHANGE,
                 LocalDate.now());
 
-        when(transactionRepository.save(new Transaction(transaction.getSecretKey(),
-                transaction.getType(), LocalDate.now())))
-                .thenReturn(transaction);
-        var expected = new TransactionDto.Response.Transaction(transaction.getSecretKey(),
-                transaction.getDate());
 
-        var trans = transactionService.saveTransaction(TransactionType.EXCHANGE,
-                "f24de643-ace3-4224-8534-681d6c329aca");
+        when(transactionRepository.save(transaction)).thenReturn();
+        var expected = new TransactionDto.Response.Transaction(transaction.getSecretKey(), transaction.getDate());
+
+        var trans = transactionService.saveTransaction(transaction.getType(), transaction.getSecretKey());
         assertEquals(expected, trans);
     }
 }

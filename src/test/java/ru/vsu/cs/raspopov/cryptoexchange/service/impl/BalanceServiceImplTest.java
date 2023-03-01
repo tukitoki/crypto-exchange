@@ -1,7 +1,9 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +29,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class BalanceServiceImplTest {
 
@@ -56,9 +59,8 @@ class BalanceServiceImplTest {
         user.getWallet().add(new AmountOfUserCurrency(user, currency, 120.0));
         Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         var currencies = balanceService.getUserBalance(
-                new UserDto.Request.UserSecretKey()
+                new UserDto.Request.UserSecretKey(user.getSecretKey().toString())
         );
-        var s = new UserDto.Request.UserSecretKey();
         var expected = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 120.0));
         assertEquals(expected, currencies);
     }

@@ -1,7 +1,9 @@
 package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -9,21 +11,19 @@ import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.AmountOfUserCurrency;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Currency;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.ExchangeRate;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.CurrencyService;
 
-import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class CurrencyServiceImplTest {
 
