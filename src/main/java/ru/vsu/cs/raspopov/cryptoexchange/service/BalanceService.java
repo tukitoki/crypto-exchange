@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface BalanceService {
 
-    List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto);
+    List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(
+            UserDto.Request.UserSecretKey userDto);
 
     AmountOfUserCurrencyDto.Response.CurrencyAmount replenishmentBalance(
             BalanceOperationDto.Request.ReplenishmentBalance balanceDto);

@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 
 import javax.validation.Valid;
@@ -28,7 +28,7 @@ public class BalanceController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<AmountOfUserCurrencyDto.Response.CurrencyAmount>> walletBalance(
             @RequestBody @NotNull(message = "type secret_key") @Valid
-            @ApiParam(value = "User secret_key") UserDto userDto) {
+            @ApiParam(value = "User secret_key") UserDto.Request.UserSecretKey userDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(balanceService.getUserBalance(userDto));
@@ -64,7 +64,8 @@ public class BalanceController {
     public ResponseEntity<BalanceOperationDto.Response.ExchangeCurrency> exchangeCurrency(
             @RequestBody @NotNull(message = "type secret_key, currency_from, currency_to and amount to exchange")
             @Valid @ApiParam(value = "User secret_key, currency_from exchange, currency_to exchange" +
-                    "and amount of exchanged currency") BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
+                    "and amount of exchanged currency")
+            BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(balanceService.exchangeCurrency(exchangeCurrency));

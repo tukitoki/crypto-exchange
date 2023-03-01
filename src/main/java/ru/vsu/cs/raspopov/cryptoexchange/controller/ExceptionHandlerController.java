@@ -26,7 +26,8 @@ public class ExceptionHandlerController {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder builder = new StringBuilder();
-        e.getBindingResult().getAllErrors().forEach((error) -> builder.append(error.getDefaultMessage()).append("\n"));
+        e.getBindingResult().getAllErrors().forEach(
+                (error) -> builder.append(error.getDefaultMessage()).append("\n"));
         log.error("EXCEPTION OCCURRED", e);
         return builder.toString();
     }
@@ -47,7 +48,7 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public String  handleIllegalArgumentException(IllegalArgumentException e) {
+    public String handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("EXCEPTION OCCURRED", e);
         return e.getMessage();
     }

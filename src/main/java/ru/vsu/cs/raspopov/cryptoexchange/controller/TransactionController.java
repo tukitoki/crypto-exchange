@@ -25,7 +25,7 @@ public class TransactionController {
 
     @ApiOperation(value = "Returns count of transactions that were made in the interval of the transferred dates")
     @GetMapping(path = "transaction/count",
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<TransactionDto.Response.TransactionCounter> getTransactionCount(
             @RequestBody @NotNull(message = "Type secret_key, date_from and date_to") @Valid
             @ApiParam(value = "User secret_key, date_from and date_to - interval")

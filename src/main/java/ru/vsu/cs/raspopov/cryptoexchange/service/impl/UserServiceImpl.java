@@ -2,10 +2,8 @@ package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.UserRegistrationDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.mapper.UserMapper;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
@@ -17,11 +15,10 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.UserService;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
     private final UserMapper userMapper;
 
     @Override
-    public UserDto createUser(UserRegistrationDto userRegistrationDto) {
+    public UserDto.Response.UserSecretKey createUser(UserDto.Request.UserRegistration userRegistrationDto) {
         if (userRepository.findByEmail(userRegistrationDto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already present");
         } else if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
@@ -33,6 +30,6 @@ public class UserServiceImpl implements UserService {
 
         log.info("USER successfully registered");
 
-        return modelMapper.map(user, UserDto.class);
+        return new UserDto.Response.UserSecretKey(user.getSecretKey().toString());
     }
 }

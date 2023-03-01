@@ -4,9 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Transaction;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 

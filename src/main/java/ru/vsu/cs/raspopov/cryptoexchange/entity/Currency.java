@@ -24,10 +24,10 @@ public class Currency {
 
     @NotBlank(message = "currency name should not be blank")
     private String name;
-    @OneToMany(mappedBy = "currency")
+    @OneToMany(mappedBy = "currency", cascade = CascadeType.ALL)
     private List<AmountOfUserCurrency> userCurrencyAmount;
 
-    @OneToMany(mappedBy = "baseCurrency")
+    @OneToMany(mappedBy = "baseCurrency", cascade = CascadeType.ALL)
     private List<ExchangeRate> baseExchangeRates;
 
 }

@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.UserRegistrationDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.UserService;
 
 import javax.validation.Valid;
@@ -23,11 +22,12 @@ public class UserController {
 
     @ApiOperation(value = "Creates new user")
     @PostMapping(path = "user",
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> createUser(
+    public ResponseEntity<UserDto.Response.UserSecretKey> createUser(
             @RequestBody @NotNull(message = "Type email and username") @Valid
-            @ApiParam(value = "Username and email of the registered user") UserRegistrationDto userRegistrationDto) {
+            @ApiParam(value = "Username and email of the registered user")
+            UserDto.Request.UserRegistration userRegistrationDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.createUser(userRegistrationDto));

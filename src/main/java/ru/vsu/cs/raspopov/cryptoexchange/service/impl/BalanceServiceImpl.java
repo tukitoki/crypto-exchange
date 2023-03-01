@@ -3,20 +3,26 @@ package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
-import ru.vsu.cs.raspopov.cryptoexchange.entity.*;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.BalanceOperationDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.UserDto;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.AmountOfUserCurrency;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.AmountOfUserCurrencyId;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.ExchangeRate;
+import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.TransactionType;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.*;
+import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
+import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
+import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
+import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -31,7 +37,8 @@ public class BalanceServiceImpl implements BalanceService {
     private final TransactionService transactionService;
 
     @Override
-    public List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(UserDto userDto) {
+    public List<AmountOfUserCurrencyDto.Response.CurrencyAmount> getUserBalance(
+            UserDto.Request.UserSecretKey userDto) {
         User user = ValidationUtil.validUser(userRepository.findById(
                 UUID.fromString(userDto.getSecretKey())));
         ValidationUtil.validUserRole(user, Role.USER);
@@ -49,6 +56,7 @@ public class BalanceServiceImpl implements BalanceService {
         return userWallet;
     }
 
+    @Transactional
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount replenishmentBalance(
             BalanceOperationDto.Request.ReplenishmentBalance balanceDto) {
@@ -57,7 +65,7 @@ public class BalanceServiceImpl implements BalanceService {
         ValidationUtil.validUserRole(user, Role.USER);
 
         var currency = ValidationUtil.validCurrency(currencyRepository.findByName(
-                        balanceDto.getCurrency()));
+                balanceDto.getCurrency()));
 
         var amountOfUserCurrency = amountOfUserCurrencyRepository.findById(
                 new AmountOfUserCurrencyId(UUID.fromString(balanceDto.getSecretKey()),
@@ -75,6 +83,7 @@ public class BalanceServiceImpl implements BalanceService {
                 amountOfUserCurrency.getAmount());
     }
 
+    @Transactional
     @Override
     public AmountOfUserCurrencyDto.Response.CurrencyAmount withdrawalMoney(
             BalanceOperationDto.Request.WithdrawalBalance balanceDto) {
@@ -104,6 +113,7 @@ public class BalanceServiceImpl implements BalanceService {
                 amountOfUserCurrency.getAmount());
     }
 
+    @Transactional
     @Override
     public BalanceOperationDto.Response.ExchangeCurrency exchangeCurrency(
             BalanceOperationDto.Request.ExchangeCurrency exchangeCurrency) {

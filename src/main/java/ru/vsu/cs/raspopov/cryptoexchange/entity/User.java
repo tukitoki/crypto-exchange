@@ -46,4 +46,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<AmountOfUserCurrency> wallet;
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }

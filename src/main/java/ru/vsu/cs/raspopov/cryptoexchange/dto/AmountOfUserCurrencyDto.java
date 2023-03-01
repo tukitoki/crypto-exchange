@@ -4,11 +4,8 @@ import lombok.Value;
 
 public class AmountOfUserCurrencyDto {
 
-    private interface AmountOfUserCurrencyId {
-        AmountOfUserCurrencyId getAmountOfUserCurrencyId();
-    }
-
     public enum Request {;
+
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {
             String currency;
@@ -17,6 +14,7 @@ public class AmountOfUserCurrencyDto {
     }
 
     public enum Response {;
+
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {
             String currency;

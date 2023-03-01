@@ -3,17 +3,17 @@ package ru.vsu.cs.raspopov.cryptoexchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.ExchangeCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.Currency;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
-import ru.vsu.cs.raspopov.cryptoexchange.repository.AmountOfUserCurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,16 +28,17 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final ExchangeRateRepository exchangeRateRepository;
 
     @Override
-    public List<CurrencyDto.Response.CurrencyExchange> getExchangeRate(CurrencyDto.Request.SecretKeyCurrency currencyDto) {
+    public List<ExchangeCurrencyDto.Response.CurrencyExchange> getExchangeRate(
+            ExchangeCurrencyDto.Request.SecretKeyCurrency exchangeDto) {
         ValidationUtil.validUser(userRepository.findById(
-                UUID.fromString(currencyDto.getSecretKey())));
+                UUID.fromString(exchangeDto.getSecretKey())));
 
         Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
-                currencyDto.getCurrency()));
+                exchangeDto.getCurrency()));
 
-        List<CurrencyDto.Response.CurrencyExchange> exchangeRates = new ArrayList<>();
+        List<ExchangeCurrencyDto.Response.CurrencyExchange> exchangeRates = new ArrayList<>();
         exchangeRateRepository.findAllByBaseCurrency(baseCurrency).forEach(exchangeRate -> {
-            exchangeRates.add(new CurrencyDto.Response.CurrencyExchange(
+            exchangeRates.add(new ExchangeCurrencyDto.Response.CurrencyExchange(
                     exchangeRate.getAnotherCurrency().getName(),
                     exchangeRate.getExchangeRate()));
         });
@@ -47,16 +48,18 @@ public class ExchangeServiceImpl implements ExchangeService {
         return exchangeRates;
     }
 
+    @Transactional
     @Override
-    public List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(CurrencyDto.Request.ChangeExchangeRate currencyDto) {
+    public List<ExchangeCurrencyDto.Response.CurrencyExchange> updateExchangeRates(
+            ExchangeCurrencyDto.Request.ChangeExchangeRate exchangeDto) {
         User user = ValidationUtil.validUser(userRepository.findById(
-                UUID.fromString(currencyDto.getSecretKey())));
+                UUID.fromString(exchangeDto.getSecretKey())));
         ValidationUtil.validUserRole(user, Role.ADMIN);
 
         Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
-                currencyDto.getCurrency()));
+                exchangeDto.getCurrency()));
 
-        List<CurrencyDto.Response.CurrencyExchange> currencies = currencyDto.getCurrencies();
+        List<ExchangeCurrencyDto.Response.CurrencyExchange> currencies = exchangeDto.getCurrencies();
         currencies.forEach(currencyExchange -> {
             ValidationUtil.validCurrency(currencyRepository.findByName(currencyExchange.getCurrency()));
         });
@@ -64,9 +67,9 @@ public class ExchangeServiceImpl implements ExchangeService {
         return updateExchangeRates(currencies, baseCurrency);
     }
 
-    private List<CurrencyDto.Response.CurrencyExchange> updateExchangeRates(
-            List<CurrencyDto.Response.CurrencyExchange> currencies, Currency baseCurrency) {
-        List<CurrencyDto.Response.CurrencyExchange> baseCurrencyExchangeRates = new ArrayList<>();
+    private List<ExchangeCurrencyDto.Response.CurrencyExchange> updateExchangeRates(
+            List<ExchangeCurrencyDto.Response.CurrencyExchange> currencies, Currency baseCurrency) {
+        List<ExchangeCurrencyDto.Response.CurrencyExchange> baseCurrencyExchangeRates = new ArrayList<>();
         currencies.forEach(currencyExchange -> {
             var anotherCurrency = currencyRepository.findByName(currencyExchange.getCurrency()).get();
 
@@ -75,7 +78,7 @@ public class ExchangeServiceImpl implements ExchangeService {
             exchangeRate.setExchangeRate(currencyExchange.getExchangeRate());
             exchangeRateRepository.save(exchangeRate);
 
-            baseCurrencyExchangeRates.add(new CurrencyDto.Response.CurrencyExchange(anotherCurrency.getName(),
+            baseCurrencyExchangeRates.add(new ExchangeCurrencyDto.Response.CurrencyExchange(anotherCurrency.getName(),
                     currencyExchange.getExchangeRate()));
 
             exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(anotherCurrency,

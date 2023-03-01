@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
+import ru.vsu.cs.raspopov.cryptoexchange.dto.ExchangeCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 
 import javax.validation.Valid;
@@ -24,24 +24,25 @@ public class ExchangeController {
     @ApiOperation(value = "Returns exchange courses depending on the basic currency")
     @GetMapping(path = "exchange/rate",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> getExchangeRate(
+    public ResponseEntity<List<ExchangeCurrencyDto.Response.CurrencyExchange>> getExchangeRate(
             @RequestBody @NotNull(message = "type secret_key and currency name") @Valid
-            @ApiParam(value = "User secret_key and currency name") CurrencyDto.Request.SecretKeyCurrency currencyDto) {
+            @ApiParam(value = "User secret_key and currency name")
+            ExchangeCurrencyDto.Request.SecretKeyCurrency exchangeDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(exchangeService.getExchangeRate(currencyDto));
+                .body(exchangeService.getExchangeRate(exchangeDto));
     }
 
     @ApiOperation(value = "Change in currency exchange rates depending on the basic currency")
     @PostMapping(path = "exchange/change-rate",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<List<CurrencyDto.Response.CurrencyExchange>> changeExchangeRates(
+    public ResponseEntity<List<ExchangeCurrencyDto.Response.CurrencyExchange>> changeExchangeRates(
             @RequestBody @NotNull(message = "type secret_key, currency name and currencies") @Valid
             @ApiParam(value = "User secret_key, base_currency name and currencies whose rates should be changed")
-            CurrencyDto.Request.ChangeExchangeRate currencyDto) {
+            ExchangeCurrencyDto.Request.ChangeExchangeRate exchangeDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(exchangeService.updateExchangeRates(currencyDto));
+                .body(exchangeService.updateExchangeRates(exchangeDto));
     }
 
 }
