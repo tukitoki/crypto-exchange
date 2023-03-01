@@ -3,6 +3,8 @@ package ru.vsu.cs.raspopov.cryptoexchange.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
+import java.math.BigDecimal;
+
 public class CurrencyDto {
 
     private interface Id {
@@ -24,7 +26,7 @@ public class CurrencyDto {
         @Value
         public static class TotalCurrencyAmount implements Fields.Currency, Fields.Amount {
             String currency;
-            Double amount;
+            BigDecimal amount;
         }
     }
 

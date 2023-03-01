@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 public enum Fields {;
 
@@ -20,6 +21,6 @@ public enum Fields {;
     protected interface Amount {
         @Positive(message = "Amount should be >0")
         @NotNull(message = "Amount should not be empty")
-        Double getAmount();
+        BigDecimal getAmount();
     }
 }

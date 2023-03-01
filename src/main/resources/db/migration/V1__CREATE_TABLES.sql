@@ -23,12 +23,12 @@ CREATE TABLE IF NOT EXISTS exchange_rate(
     exchange_rate_id SERIAL NOT NULL PRIMARY KEY,
     currency_id INT NOT NULL REFERENCES currency(currency_id) ON DELETE CASCADE,
     another_currency_currency_id INT NOT NULL REFERENCES currency(currency_id) ON DELETE CASCADE,
-    exchange_rate DOUBLE PRECISION NOT NULL
+    exchange_rate NUMERIC NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS user_currency_amount(
     user_id uuid NOT NULL REFERENCES exchange_user (user_id) ON DELETE CASCADE,
     currency_id INT NOT NULL REFERENCES currency (currency_id) ON DELETE CASCADE,
-    amount DOUBLE PRECISION NOT NULL,
+    amount NUMERIC NOT NULL,
     PRIMARY KEY(user_id, currency_id)
 );

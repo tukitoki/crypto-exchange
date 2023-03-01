@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -28,6 +29,7 @@ public class AmountOfUserCurrency {
     private Currency currency;
 
     @Min(value = 0, message = "amount should be >=0")
-    private Double amount;
+    @Column(columnDefinition = "numeric")
+    private BigDecimal amount;
 
 }

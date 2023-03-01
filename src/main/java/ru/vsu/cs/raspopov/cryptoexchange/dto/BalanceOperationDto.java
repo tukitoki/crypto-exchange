@@ -6,6 +6,7 @@ import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 public class BalanceOperationDto {
 
@@ -31,13 +32,13 @@ public class BalanceOperationDto {
     private interface AmountTo {
         @Positive(message = "Amount_to should be >0")
         @JsonProperty("amount_to")
-        Double getAmountTo();
+        BigDecimal getAmountTo();
     }
 
     private interface AmountFrom {
         @Positive(message = "Amount_from should be >0")
         @JsonProperty("amount_from")
-        Double getAmountFrom();
+        BigDecimal getAmountFrom();
     }
 
     public enum Request {;
@@ -46,7 +47,7 @@ public class BalanceOperationDto {
         public static class ReplenishmentBalance implements Fields.SecretKey, Fields.Currency, Fields.Amount {
             String secretKey;
             String currency;
-            Double amount;
+            BigDecimal amount;
         }
 
         @Value
@@ -54,7 +55,7 @@ public class BalanceOperationDto {
                 MoneyWithdrawalPlatform {
             String secretKey;
             String currency;
-            Double amount;
+            BigDecimal amount;
             String moneyWithdrawalPlatform;
         }
 
@@ -63,7 +64,7 @@ public class BalanceOperationDto {
             String secretKey;
             String currencyFrom;
             String currencyTo;
-            Double amount;
+            BigDecimal amount;
         }
     }
 
@@ -73,8 +74,8 @@ public class BalanceOperationDto {
         public static class ExchangeCurrency implements CurrencyFrom, CurrencyTo, AmountFrom, AmountTo {
             String currencyFrom;
             String currencyTo;
-            Double amountFrom;
-            Double amountTo;
+            BigDecimal amountFrom;
+            BigDecimal amountTo;
         }
 
     }

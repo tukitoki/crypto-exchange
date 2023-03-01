@@ -218,7 +218,7 @@
         },
         {
             "currency": "BTC",
-            "exchange_rate": 9.57E-5
+            "exchange_rate": 0.0000957
         }
     ]
 
@@ -238,7 +238,7 @@
         "currency_from": "RUB",
         "currency_to": "TON",
         "amount_from": 100.0,
-        "amount_to": 0.5499999999999999
+        "amount_to": 0.5500
     }
 
     REQUEST: 
@@ -274,7 +274,7 @@
     [
         {
             "currency": "BTC",
-            "exchange_rate": 9.6E-5
+            "exchange_rate": 0.000096
         },
         {
             "currency": "RUB",
@@ -322,7 +322,7 @@
     RESPONSE (HttpStatus.OK):
     {
         "currency": "TON",
-        "amount": 0.5499999999999999
+        "amount": 0.5500
     }
 
 - #### Посмотреть количество операций, которые были проведены за указанный период (например, за последние сутки). GET запрос. URI **http://localhost:8080/api/transaction/count**

@@ -21,6 +21,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -70,7 +71,7 @@ public class BalanceServiceImpl implements BalanceService {
         var amountOfUserCurrency = amountOfUserCurrencyRepository.findById(
                 new AmountOfUserCurrencyId(UUID.fromString(balanceDto.getSecretKey()),
                         currency.getId())).get();
-        amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() + balanceDto.getAmount());
+        amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount().add(balanceDto.getAmount()));
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
 
         log.info("User with secret_key: " + balanceDto.getSecretKey() + "successfully replenishment "
@@ -100,7 +101,7 @@ public class BalanceServiceImpl implements BalanceService {
 
         validWalletBalance(amountOfUserCurrency.getAmount(), balanceDto.getAmount());
 
-        amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount() - balanceDto.getAmount());
+        amountOfUserCurrency.setAmount(amountOfUserCurrency.getAmount().subtract(balanceDto.getAmount()));
         amountOfUserCurrencyRepository.save(amountOfUserCurrency);
 
         transactionService.saveTransaction(TransactionType.WITHDRAWAL, balanceDto.getSecretKey());
@@ -136,7 +137,7 @@ public class BalanceServiceImpl implements BalanceService {
                 new AmountOfUserCurrencyId(UUID.fromString(exchangeCurrency.getSecretKey()),
                         exchangeableCurrency.getId())).get();
 
-        double exchangeAmount = exchangeCurrency(baseUserCurrency, exchangeableUserCurrency,
+        BigDecimal exchangeAmount = exchangeCurrency(baseUserCurrency, exchangeableUserCurrency,
                 exchangeCurrency.getAmount());
 
         log.info("User with secret_key: " + exchangeCurrency.getSecretKey() + "successfully exchange from "
@@ -150,17 +151,17 @@ public class BalanceServiceImpl implements BalanceService {
                 exchangeAmount);
     }
 
-    private Double exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
+    private BigDecimal exchangeCurrency(AmountOfUserCurrency fromExchangeCurrency,
                                     AmountOfUserCurrency toExchangeCurrency,
-                                    Double amountOfExchange) {
+                                    BigDecimal amountOfExchange) {
         ExchangeRate exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(
                 fromExchangeCurrency.getCurrency(),
                 toExchangeCurrency.getCurrency()).get();
 
-        fromExchangeCurrency.setAmount(fromExchangeCurrency.getAmount() - amountOfExchange);
+        fromExchangeCurrency.setAmount(fromExchangeCurrency.getAmount().subtract(amountOfExchange));
 
-        double changedCurrency = exchangeRate.getExchangeRate() * amountOfExchange
-                + toExchangeCurrency.getAmount();
+        BigDecimal changedCurrency = exchangeRate.getExchangeRate().multiply(amountOfExchange);
+        changedCurrency.add(toExchangeCurrency.getAmount());
         toExchangeCurrency.setAmount(changedCurrency);
 
         amountOfUserCurrencyRepository.save(fromExchangeCurrency);
@@ -168,8 +169,8 @@ public class BalanceServiceImpl implements BalanceService {
         return toExchangeCurrency.getAmount();
     }
 
-    private void validWalletBalance(Double balance, Double amount) {
-        if (balance < amount) {
+    private void validWalletBalance(BigDecimal balance, BigDecimal amount) {
+        if (balance.compareTo(amount) < 0) {
             throw new IllegalArgumentException("Not enough balance on wallet");
         }
     }

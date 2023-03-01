@@ -15,6 +15,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.CurrencyService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -37,10 +38,10 @@ public class CurrencyServiceImpl implements CurrencyService {
         Currency baseCurrency = ValidationUtil.validCurrency(currencyRepository.findByName(
                 currencyDto.getCurrency()));
 
-        double totalCurrencyAmount = 0;
+        BigDecimal totalCurrencyAmount = new BigDecimal(0);
         for (AmountOfUserCurrency amountOfUserCurrency : amountOfUserCurrencyRepository
                 .findAllByCurrency(baseCurrency)) {
-            totalCurrencyAmount += amountOfUserCurrency.getAmount();
+            totalCurrencyAmount = totalCurrencyAmount.add(amountOfUserCurrency.getAmount());
         }
 
         log.info("ADMIN successfully get total amount of currency");

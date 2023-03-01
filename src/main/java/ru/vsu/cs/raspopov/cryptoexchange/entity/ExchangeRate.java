@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +28,6 @@ public class ExchangeRate {
     @OneToOne
     private Currency anotherCurrency;
 
-    @Column(name = "exchange_rate")
-    private Double exchangeRate;
+    @Column(name = "exchange_rate", columnDefinition = "numeric")
+    private BigDecimal exchangeRate;
 }

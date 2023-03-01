@@ -18,6 +18,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.CurrencyService;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,8 +67,8 @@ class CurrencyServiceImplTest {
                 new ArrayList<>()
         );
         var amounts = List.of(
-                new AmountOfUserCurrency(user, baseCurrency, 434.0),
-                new AmountOfUserCurrency(secondUser, baseCurrency, 500.0)
+                new AmountOfUserCurrency(user, baseCurrency, new BigDecimal("434")),
+                new AmountOfUserCurrency(secondUser, baseCurrency, new BigDecimal("500"))
         );
         Mockito.when(userRepository.findById(admin.getSecretKey())).thenReturn(Optional.of(admin));
         Mockito.when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
@@ -75,7 +76,7 @@ class CurrencyServiceImplTest {
                 .thenReturn(amounts);
         var sumAmount = new AmountOfUserCurrencyDto.Response.CurrencyAmount(
                 "RUB",
-                934.0
+                new BigDecimal("934")
         );
         assertEquals(sumAmount, currencyService.getTotalAmountOfCurrency(
                         new CurrencyDto.Request.SecretKeyCurrency(

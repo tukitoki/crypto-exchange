@@ -21,6 +21,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.BalanceService;
 import ru.vsu.cs.raspopov.cryptoexchange.service.TransactionService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +57,13 @@ class BalanceServiceImplTest {
                 Role.USER,
                 new ArrayList<>()
         );
-        user.getWallet().add(new AmountOfUserCurrency(user, currency, 120.0));
+        user.getWallet().add(new AmountOfUserCurrency(user, currency, new BigDecimal("120")));
         Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
-        var currencies = balanceService.getUserBalance(
-                new UserDto.Request.UserSecretKey(user.getSecretKey().toString())
-        );
-        var expected = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 120.0));
+        var userDto = new UserDto.Request.UserSecretKey();
+        userDto.setSecretKey(user.getSecretKey().toString());
+        var currencies = balanceService.getUserBalance(userDto);
+        var expected = List.of(new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB",
+                new BigDecimal("120")));
         assertEquals(expected, currencies);
     }
 
@@ -81,10 +83,10 @@ class BalanceServiceImplTest {
                 new ArrayList<>()
         );
         var amountOfUserCurrency = new AmountOfUserCurrency(
-                user, currency, 200.0
+                user, currency, new BigDecimal("200")
         );
         var amountOfCurrency = new AmountOfUserCurrencyDto.Response.CurrencyAmount(
-                "RUB", 500.0
+                "RUB", new BigDecimal("500")
         );
         Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         Mockito.when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
@@ -104,7 +106,7 @@ class BalanceServiceImplTest {
                 new BalanceOperationDto.Request.ReplenishmentBalance(
                         user.getSecretKey().toString(),
                         "RUB",
-                        300.0
+                        new BigDecimal("300")
                 ));
         assertEquals(currencyDto, amountOfCurrency);
     }
@@ -125,10 +127,10 @@ class BalanceServiceImplTest {
                 new ArrayList<>()
         );
         var amountOfUserCurrency = new AmountOfUserCurrency(
-                user, currency, 200.0
+                user, currency, new BigDecimal("200")
         );
         var amountOfCurrency = new AmountOfUserCurrencyDto.Response.CurrencyAmount(
-                "RUB", 100.0
+                "RUB", new BigDecimal("100")
         );
 
         Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
@@ -149,7 +151,7 @@ class BalanceServiceImplTest {
                 new BalanceOperationDto.Request.WithdrawalBalance(
                         user.getSecretKey().toString(),
                         "RUB",
-                        100.0,
+                        new BigDecimal("100"),
                         "card"
                 ));
 
@@ -179,12 +181,12 @@ class BalanceServiceImplTest {
         );
 
         var amountOfBaseCurrency = new AmountOfUserCurrency(
-                user, baseCurrency, 200.0
+                user, baseCurrency, new BigDecimal("200")
         );
         var amountOfCurrency = new BalanceOperationDto.Response.ExchangeCurrency(
-                "RUB", "RUB", 200.0, 200.0
+                "RUB", "RUB", new BigDecimal("200"), new BigDecimal("200")
         );
-        var exchangeRate = new ExchangeRate(1, baseCurrency, exchangeableCurrency, 1.0);
+        var exchangeRate = new ExchangeRate(1, baseCurrency, exchangeableCurrency, new BigDecimal("1"));
         Mockito.when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         Mockito.when(currencyRepository.findByName(baseCurrency.getName())).thenReturn(Optional.of(baseCurrency));
         Mockito.when(amountOfUserCurrencyRepository.findById(new AmountOfUserCurrencyId(
@@ -208,7 +210,7 @@ class BalanceServiceImplTest {
                         user.getSecretKey().toString(),
                         "RUB",
                         "RUB",
-                        200.0
+                        new BigDecimal("200")
                 ));
 
         assertEquals(currencyDto, amountOfCurrency);

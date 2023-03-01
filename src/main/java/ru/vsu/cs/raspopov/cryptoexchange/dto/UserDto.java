@@ -32,7 +32,6 @@ public class UserDto {
         }
 
         @Data
-        @Value
         public static class UserSecretKey implements Fields.SecretKey {
             String secretKey;
         }

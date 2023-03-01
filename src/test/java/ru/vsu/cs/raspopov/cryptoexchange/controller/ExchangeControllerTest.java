@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.ExchangeCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,8 +26,9 @@ class ExchangeControllerTest {
 
     @Test
     void getExchangeRate_ReturnsValidResponseEntity() {
-        var exchangeRates = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("RUB", 0.5),
-                new ExchangeCurrencyDto.Response.CurrencyExchange("BTC", 0.0005));
+        var exchangeRates = List.of(
+                new ExchangeCurrencyDto.Response.CurrencyExchange("RUB", new BigDecimal("0.5")),
+                new ExchangeCurrencyDto.Response.CurrencyExchange("BTC", new BigDecimal("0.0005")));
 
         var currencyDto = new ExchangeCurrencyDto.Request.SecretKeyCurrency("fff", "ton");
         doReturn(exchangeRates).when(this.exchangeService).getExchangeRate(currencyDto);
@@ -39,8 +41,9 @@ class ExchangeControllerTest {
 
     @Test
     void changeExchangeRates_ReturnsValidResponseEntity() {
-        var changedExchangeRates = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("RUB", 0.1),
-                new ExchangeCurrencyDto.Response.CurrencyExchange("BTC", 0.05));
+        var changedExchangeRates = List.of(
+                new ExchangeCurrencyDto.Response.CurrencyExchange("RUB", new BigDecimal("0.1")),
+                new ExchangeCurrencyDto.Response.CurrencyExchange("BTC", new BigDecimal("0.05")));
 
         var currencyDto = new ExchangeCurrencyDto.Request.ChangeExchangeRate("fff", "TON", changedExchangeRates);
         doReturn(changedExchangeRates).when(this.exchangeService).updateExchangeRates(currencyDto);

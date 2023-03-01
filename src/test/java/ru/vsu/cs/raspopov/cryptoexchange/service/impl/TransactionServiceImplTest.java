@@ -64,18 +64,4 @@ class TransactionServiceImplTest {
         var expected = transactionService.getTransactionCount(fromTo);
         assertEquals(counter, expected);
     }
-
-    @Test
-    void saveTransaction() {
-        Transaction transaction = new Transaction(1,
-                "f24de643-ace3-4224-8534-681d6c329aca", TransactionType.EXCHANGE,
-                LocalDate.now());
-
-
-        when(transactionRepository.save(transaction)).thenReturn();
-        var expected = new TransactionDto.Response.Transaction(transaction.getSecretKey(), transaction.getDate());
-
-        var trans = transactionService.saveTransaction(transaction.getType(), transaction.getSecretKey());
-        assertEquals(expected, trans);
-    }
 }

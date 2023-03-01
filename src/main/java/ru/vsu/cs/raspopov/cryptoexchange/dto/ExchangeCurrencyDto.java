@@ -5,6 +5,7 @@ import lombok.Value;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ExchangeCurrencyDto {
@@ -12,7 +13,7 @@ public class ExchangeCurrencyDto {
     private interface ExchangeRate {
         @JsonProperty("exchange_rate")
         @Positive(message = "Exchange_rate should be >0")
-        Double getExchangeRate();
+        BigDecimal getExchangeRate();
     }
 
     private interface Currencies {
@@ -43,7 +44,7 @@ public class ExchangeCurrencyDto {
         @Value
         public static class CurrencyExchange implements ExchangeRate, Fields.Currency {
             String currency;
-            Double exchangeRate;
+            BigDecimal exchangeRate;
         }
     }
 }

@@ -14,6 +14,9 @@ import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 import ru.vsu.cs.raspopov.cryptoexchange.utils.ValidationUtil;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -83,7 +86,8 @@ public class ExchangeServiceImpl implements ExchangeService {
 
             exchangeRate = exchangeRateRepository.findByBaseCurrencyAndAnotherCurrency(anotherCurrency,
                     baseCurrency).get();
-            exchangeRate.setExchangeRate(1 / currencyExchange.getExchangeRate());
+            exchangeRate.setExchangeRate(BigDecimal.ONE.divide(currencyExchange.getExchangeRate(),
+                    5, RoundingMode.HALF_DOWN));
             exchangeRateRepository.save(exchangeRate);
         });
 

@@ -11,6 +11,8 @@ import ru.vsu.cs.raspopov.cryptoexchange.dto.AmountOfUserCurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.dto.CurrencyDto;
 import ru.vsu.cs.raspopov.cryptoexchange.service.CurrencyService;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,7 +26,7 @@ class CurrencyControllerTest {
 
     @Test
     void getTotalAmountOfCurrency_ReturnsValidResponseEntity() {
-        var amount = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", 2000.0);
+        var amount = new AmountOfUserCurrencyDto.Response.CurrencyAmount("RUB", new BigDecimal("2000"));
 
         var currencyDto = new CurrencyDto.Request.SecretKeyCurrency("fff", "RUB");
         Mockito.doReturn(amount).when(this.currencyService).getTotalAmountOfCurrency(currencyDto);

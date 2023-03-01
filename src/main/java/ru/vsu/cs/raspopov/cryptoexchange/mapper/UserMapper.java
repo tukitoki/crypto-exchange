@@ -9,6 +9,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.entity.User;
 import ru.vsu.cs.raspopov.cryptoexchange.entity.enums.Role;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.CurrencyRepository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class UserMapper {
         user.setRole(Role.USER);
         List<AmountOfUserCurrency> userCurrencyAmounts = new ArrayList<>();
         for (Currency currency : currencyRepository.findAll()) {
-            userCurrencyAmounts.add(new AmountOfUserCurrency(user, currency, 0.0));
+            userCurrencyAmounts.add(new AmountOfUserCurrency(user, currency, BigDecimal.ZERO));
         }
         user.setWallet(userCurrencyAmounts);
         return user;

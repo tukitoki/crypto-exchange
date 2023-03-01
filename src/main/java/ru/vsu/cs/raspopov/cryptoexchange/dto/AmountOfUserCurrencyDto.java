@@ -2,6 +2,8 @@ package ru.vsu.cs.raspopov.cryptoexchange.dto;
 
 import lombok.Value;
 
+import java.math.BigDecimal;
+
 public class AmountOfUserCurrencyDto {
 
     public enum Request {;
@@ -9,7 +11,7 @@ public class AmountOfUserCurrencyDto {
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {
             String currency;
-            Double amount;
+            BigDecimal amount;
         }
     }
 
@@ -18,8 +20,7 @@ public class AmountOfUserCurrencyDto {
         @Value
         public static class CurrencyAmount implements Fields.Currency, Fields.Amount {
             String currency;
-            Double amount;
-
+            BigDecimal amount;
         }
     }
 }

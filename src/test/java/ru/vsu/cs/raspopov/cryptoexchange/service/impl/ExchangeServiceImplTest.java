@@ -16,6 +16,7 @@ import ru.vsu.cs.raspopov.cryptoexchange.repository.ExchangeRateRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.repository.UserRepository;
 import ru.vsu.cs.raspopov.cryptoexchange.service.ExchangeService;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,7 +57,7 @@ class ExchangeServiceImplTest {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
-        var exchangeRates = List.of(new ExchangeRate(1, currency, anotherCurrency, 4.0));
+        var exchangeRates = List.of(new ExchangeRate(1, currency, anotherCurrency, new BigDecimal("4.0")));
         when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.of(currency));
         when(exchangeRateRepository.findAllByBaseCurrency(currency))
@@ -65,7 +66,7 @@ class ExchangeServiceImplTest {
                 user.getSecretKey().toString(),
                 currency.getName()
         ));
-        var expected = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("TON", 4.0));
+        var expected = List.of(new ExchangeCurrencyDto.Response.CurrencyExchange("TON", new BigDecimal("4.0")));
         assertEquals(expected, rates);
     }
 
@@ -90,7 +91,7 @@ class ExchangeServiceImplTest {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
-        var exchangeRates = List.of(new ExchangeRate(1, currency, anotherCurrency, 4.0));
+        var exchangeRates = List.of(new ExchangeRate(1, currency, anotherCurrency, new BigDecimal("4.0")));
         when(userRepository.findById(user.getSecretKey())).thenReturn(Optional.of(user));
         when(currencyRepository.findByName(currency.getName())).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class,
@@ -98,9 +99,5 @@ class ExchangeServiceImplTest {
                 user.getSecretKey().toString(),
                 currency.getName()
         )));
-    }
-
-    @Test
-    void updateExchangeRates() {
     }
 }
